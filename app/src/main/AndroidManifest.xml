@@ -45,8 +45,11 @@
         <activity
             android:name=".ReservedMapsActivity"
             android:label="@string/title_activity_reserved_maps" />
-        <activity android:name=".ConfirmDone" />
-        <activity android:name=".Menu"></activity>
+        <activity android:name=".ConfirmDone"
+            android:theme="@style/AppTheme.PopupTheme">
+
+        </activity>
+
     </application>
 
 </manifest>

@@ -9,32 +9,45 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.mazdis.sabps.ConfirmDone">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Are you done with this booking?"
-        android:id="@+id/confirmation_textview"/>
-
    <LinearLayout
-       android:layout_below="@+id/confirmation_textview"
+
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:orientation="horizontal">
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:gravity="center">
 
-       <Button
+       <TextView
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:text="YES"
-           android:onClick="startMap"
+           android:text="Are you done with this booking?"
+           android:id="@+id/confirmation_textview"
            />
 
-       <Button
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="NO"
-           android:onClick="backToReservedMap"
-           />
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+
+             <Button
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="YES"
+               android:onClick="startMap"
+               />
+
+             <Button
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="NO"
+               android:onClick="backToReservedMap"
+               />
+
+       </LinearLayout>
 
    </LinearLayout>
+
 
 </RelativeLayout>

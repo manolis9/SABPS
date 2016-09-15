@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.*;
 
-import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,11 +16,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.vision.barcode.Barcode;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class MapsActivity extends Menu implements OnMapReadyCallback {
 
@@ -65,7 +60,6 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
             public boolean onMarkerClick(Marker marker) {
 
                 showModule(marker);
-
                 return false;
             }
         });
@@ -105,10 +99,20 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
 
         Module module1 = new Module("SABPS SUB", "6138 Student Union Blvd, Vancouver, BC V6T 1Z1", 1.00);
         list.add(module1);
-        Module module2 = new Module("SABPS Athens", "Othonos 73, Kifisia, Greece 145 61", 2.00);
+        Module module2 = new Module("SABPS Athens", "Othonos 73, Kifisia, Greece 145 61", 1.00);
         list.add(module2);
-        Module module3 = new Module("SABPS KITS BEACH ", "1499 Arbutus St, Vancouver, BC V6J 5N2", 0.50);
+        Module module3 = new Module("SABPS Kits Beach ", "1499 Arbutus St, Vancouver, BC V6J 5N2", 0.50);
         list.add(module3);
+        Module module4 = new Module("SABPS Calgary", "324 8 Ave SW, Calgary, AB T2P 2Z2", 1.00);
+        list.add(module4);
+        Module module5 = new Module("SABPS Toronto", "220 Yonge St, Toronto, ON M5B 2H1", 2.00);
+        list.add(module5);
+        Module module6 = new Module("SABPS Waterfront", "200 Granville St, Vancouver, BC V6C 1S4", 2.00);
+        list.add(module6);
+        Module module7 = new Module("SABPS BRAZIL", "Brazil", 1.00);
+        list.add(module7);
+        Module module8 = new Module("SABPS NY", "NY", 3.00);
+        list.add(module8);
 
     }
 
@@ -136,11 +140,6 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
 
         return latlng;
     }
-
-//    public void startMenu(View view){
-//        startActivity(new Intent(this, Menu.class));
-//    }
-
 
 }
 
