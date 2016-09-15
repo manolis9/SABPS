@@ -44,6 +44,7 @@ public class ModuleProfile extends AppCompatActivity {
         intent.putExtra("reservedAddress", reservedAddress);
         intent.putExtra("reservedTitle", reservedTitle);
         startActivity(intent);
+        finish();
 
     }
 }

@@ -18,10 +18,12 @@ public class ConfirmDone extends AppCompatActivity {
 
     public void startMap(View view){
         startActivity(new Intent(this, MapsActivity.class));
+        finish();
     }
 
     public void backToReservedMap(View view){
         startActivity((new Intent(this, ReservedMapsActivity.class)));
+        finish();
     }
 
 }

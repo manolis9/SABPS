@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -137,9 +137,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return latlng;
     }
 
-    public void startMenu(View view){
-        startActivity(new Intent(this, Menu.class));
-    }
+//    public void startMenu(View view){
+//        startActivity(new Intent(this, Menu.class));
+//    }
 
 
 }
