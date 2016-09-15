@@ -2,9 +2,6 @@ package com.example.mazdis.sabps;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by manio on 2016-09-13.
- */
 public class Module {
     private String title;
     private double price;
