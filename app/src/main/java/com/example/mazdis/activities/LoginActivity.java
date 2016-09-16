@@ -1,8 +1,23 @@
 package com.example.mazdis.activities;
 
-/**
- * Created by manio on 2016-09-16.
- */
-public class LoginActivity extends BaseActivity {
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
 
+import com.example.mazdis.sabps.R;
+
+public class LoginActivity extends BaseActivity {
+    @Override
+    protected void onCreate(Bundle savedState){
+        super.onCreate(savedState);
+
+        setContentView(R.layout.activity_login);
+
+    }
+
+    public void doLogin(View view) {
+        application.getAuth().getUser().setLoggedIn(true);
+        startActivity(new Intent(this, MapsActivity.class));
+        finish();
+    }
 }

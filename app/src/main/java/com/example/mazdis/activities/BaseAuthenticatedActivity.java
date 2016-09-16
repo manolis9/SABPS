@@ -8,11 +8,11 @@ public abstract class BaseAuthenticatedActivity extends BaseActivity {
     protected final void onCreate(Bundle savedState){
         super.onCreate(savedState);
 
-//        if(!application.getAuth().getUser().isLoggedIn()){
-//            startActivity(new Intent(this, LoginActivity.class));
-//            finish();
-//            return;
-//        }
+        if(!application.getAuth().getUser().isLoggedIn()){
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
         onSabpsCreate(savedState);
 
