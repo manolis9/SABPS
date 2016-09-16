@@ -1,4 +1,4 @@
-package com.example.mazdis.sabps;
+package com.example.mazdis.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +7,8 @@ import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.view.*;
 
+import com.example.mazdis.sabps.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,8 +24,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onSabpsCreate(Bundle savedState) {
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -53,7 +52,6 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
             ArrayList<Module> list = new ArrayList<>();
             modulesList(list);
             placeMarker(list);
-
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

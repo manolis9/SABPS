@@ -1,4 +1,4 @@
-package com.example.mazdis.sabps;
+package com.example.mazdis.activities;
 
 import com.google.android.gms.maps.model.LatLng;
 

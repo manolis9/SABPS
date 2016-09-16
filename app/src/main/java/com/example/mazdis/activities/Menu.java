@@ -1,11 +1,12 @@
-package com.example.mazdis.sabps;
+package com.example.mazdis.activities;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public abstract class Menu extends FragmentActivity{
+import com.example.mazdis.sabps.R;
+
+public abstract class Menu extends BaseAuthenticatedActivity{
     @Override
     protected void onPostCreate(Bundle savedState){
         super.onPostCreate(savedState);

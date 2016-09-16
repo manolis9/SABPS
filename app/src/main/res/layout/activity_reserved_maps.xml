@@ -9,7 +9,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.mazdis.sabps.ReservedMapsActivity" />
+        tools:context="com.example.mazdis.activities.ReservedMapsActivity" />
 
     <Button
         android:layout_width="wrap_content"
