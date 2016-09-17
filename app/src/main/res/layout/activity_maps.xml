@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mazdis.activities.ReservedMapsActivity"
+    tools:context="com.example.mazdis.activities.MapsActivity"
     >
 
     <RelativeLayout
@@ -21,40 +21,8 @@
             tools:context="com.example.mazdis.activities.ReservedMapsActivity" />
     
     </RelativeLayout>
-    
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#44E0F2F1"
-        android:layout_gravity="start">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Find Parking"
-            android:id="@+id/find_parking_button"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="My Profile"
-            android:id="@+id/my_profile_button"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="My Bookings"
-            android:id="@+id/my_bookings_button"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:id="@+id/settings_button"/>
-
-    </LinearLayout>
-    
-    
+    <include
+        layout="@layout/activity_menu" />
 
 </android.support.v4.widget.DrawerLayout>

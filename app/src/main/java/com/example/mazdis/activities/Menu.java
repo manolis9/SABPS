@@ -20,6 +20,15 @@ public abstract class Menu extends BaseAuthenticatedActivity{
             }
         });
 
+        findViewById(R.id.my_account_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                startActivity(new Intent(Menu.this, UserAccount.class));
+                finish();
+            }
+        });
+
     }
 }
 

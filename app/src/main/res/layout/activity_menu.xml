@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text="Menu"
-        android:id="@+id/menuTextView"
-        android:gravity="left"
-        android:layout_gravity="center_horizontal" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#44E0F2F1"
+    android:layout_gravity="start">
+
+    <include
+        layout="@layout/header"/>
 
     <Button
-        android:layout_width="135dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Find Parking"
-        android:layout_gravity="center_horizontal"
-        android:onClick="startMap"
-        />
+        android:id="@+id/find_parking_button"/>
 
     <Button
-        android:layout_width="135dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Profile"
-        android:layout_gravity="center_horizontal"
-        />
+        android:text="My Account"
+        android:id="@+id/my_account_button"/>
 
     <Button
-        android:layout_width="135dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My Bookings"
-        android:layout_gravity="center_horizontal"
-        />
+        android:id="@+id/my_bookings_button"/>
 
     <Button
-        android:layout_width="135dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:layout_gravity="center_horizontal"
-        />
+        android:id="@+id/settings_button"/>
 
 
 </LinearLayout>
+
+
