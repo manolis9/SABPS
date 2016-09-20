@@ -13,5 +13,6 @@ public class BaseActivity extends FragmentActivity {
         super.onCreate(savedState);
 
         application = (SabpsApplication) getApplication();
+
     }
 }

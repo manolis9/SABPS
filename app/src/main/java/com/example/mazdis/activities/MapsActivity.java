@@ -111,7 +111,12 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         list.add(module7);
         Module module8 = new Module("SABPS NY", "NY", 3.00);
         list.add(module8);
-
+        Module module9 = new Module("SABPS McDonald", "2827 W Broadway, Vancouver, BC V6K 2G6", 1.00);
+        list.add(module9);
+        Module module10 = new Module("SABPS Granville", "1465 W Broadway, Vancouver, BC V6H 3G6", 1.00);
+        list.add(module10);
+        Module module11 = new Module("SABPS Alma", "2565 Alma St, Vancouver, BC V6R 3R8", 1.00);
+        list.add(module11);
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {

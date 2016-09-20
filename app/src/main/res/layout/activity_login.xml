@@ -20,16 +20,34 @@
         android:orientation="vertical"
         >
 
-        <Button
-            android:layout_width="match_parent"
+        <EditText
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Login"
-            android:onClick="doLogin"/>
+            android:hint="Email"
+            android:id="@+id/email_login_edittext"
+            android:layout_gravity="center_horizontal"/>
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:id="@+id/password_login_edittext"
+            android:layout_gravity="center_horizontal"
+            />
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:onClick="doLogin"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <Button
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:layout_gravity="center_horizontal"
             />
 
     </LinearLayout>

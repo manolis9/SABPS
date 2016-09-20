@@ -1,6 +1,7 @@
 package com.example.mazdis.activities;
 
 import android.content.Intent;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.view.View;
 
@@ -26,6 +27,15 @@ public abstract class Menu extends BaseAuthenticatedActivity{
 
                 startActivity(new Intent(Menu.this, UserAccount.class));
                 finish();
+            }
+        });
+
+        findViewById(R.id.settings_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                startActivity(new Intent(Menu.this, SettingsActivity.class));
+
             }
         });
 

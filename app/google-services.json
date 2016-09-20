@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "881638063284",
+    "firebase_url": "https://sabps-cd1b7.firebaseio.com",
+    "project_id": "sabps-cd1b7",
+    "storage_bucket": "sabps-cd1b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881638063284:android:166481e508ae8daf",
+        "android_client_info": {
+          "package_name": "com.example.mazdis.sabps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881638063284-gf3dhiivsnskcf942hq8dotkj7iasubd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mazdis.sabps",
+            "certificate_hash": "66DB1E7F65CBAC5F02FDF8D4570075B07791F364"
+          }
+        },
+        {
+          "client_id": "881638063284-b6tk0ghcp270poukrfiet669f6sns88a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZZTDQAaOFRqN1xryzcPGQA3ga9rY5PNc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881638063284-b6tk0ghcp270poukrfiet669f6sns88a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

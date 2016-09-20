@@ -49,8 +49,11 @@
         <activity
             android:name="com.example.mazdis.activities.ConfirmDone"
             android:theme="@style/AppTheme.PopupTheme" />
-        <activity android:name="com.example.mazdis.activities.LoginActivity"></activity>
-        <activity android:name="com.example.mazdis.activities.UserAccount"></activity>
+        <activity android:name="com.example.mazdis.activities.LoginActivity" />
+        <activity android:name="com.example.mazdis.activities.UserAccount" />
+        <activity
+            android:name="com.example.mazdis.activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
