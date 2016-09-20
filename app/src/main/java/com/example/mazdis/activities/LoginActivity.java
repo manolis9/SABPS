@@ -83,5 +83,6 @@ public class LoginActivity extends BaseActivity {
     public void startRegistration(View view){
         application.getAuth().getUser().setLoggedIn(true);
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
+        finish();
     }
 }
