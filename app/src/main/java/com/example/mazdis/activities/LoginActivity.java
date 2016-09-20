@@ -31,27 +31,26 @@ public class LoginActivity extends BaseActivity {
         emailField = (EditText) findViewById(R.id.email_login_edittext);
         passwordField = (EditText) findViewById(R.id.password_login_edittext);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                if (firebaseAuth.getCurrentUser() != null) {
-
-                    application.getAuth().getUser().setLoggedIn(true);
-                    startActivity(new Intent(LoginActivity.this, MapsActivity.class));
-                    finish();
-
-                }
-            }
-        };
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//
+//                if (firebaseAuth.getCurrentUser() != null) {
+//
+//                    application.getAuth().getUser().setLoggedIn(true);
+//                    startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+//                    finish();
+//                }
+//            }
+//        };
     }
 
-    @Override
-    protected void onStart(){
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-
-    }
+//    @Override
+//    protected void onStart(){
+//        super.onStart();
+//        mAuth.addAuthStateListener(mAuthListener);
+//
+//    }
 
     public void doLogin(View view) {
 
@@ -70,10 +69,19 @@ public class LoginActivity extends BaseActivity {
                     if (!task.isSuccessful()) {
                         Toast.makeText(LoginActivity.this, "Login Problem", Toast.LENGTH_LONG).show();
 
+                    } else {
+                        application.getAuth().getUser().setLoggedIn(true);
+                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                        finish();
                     }
                 }
             });
         }
 
+    }
+
+    public void startRegistration(View view){
+        application.getAuth().getUser().setLoggedIn(true);
+        startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
     }
 }
