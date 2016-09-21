@@ -56,6 +56,12 @@
             android:id="@+id/phoneNumber_edittext"
             />
 
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:onClick="logout"/>
+
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.example.mazdis.activities;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.mazdis.sabps.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mazdis.sabps.infrastructure.User;
 
 public class UserAccount extends Menu{
@@ -25,6 +27,8 @@ public class UserAccount extends Menu{
 //
 //    private ActionMode editAccountActionMode; //to keep track of contextual action bar
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onSabpsCreate(Bundle savedState) {
         setContentView(R.layout.activity_user_account);
@@ -40,7 +44,14 @@ public class UserAccount extends Menu{
 //        email.setText(user.getEmail());
 //
 //        changeState(STATE_VIEWING);
+        mAuth = FirebaseAuth.getInstance();
     }
 
+    public void logout(View view){
+
+        mAuth.signOut();
+        application.getAuth().getUser().setLoggedIn(false);
+        startActivity(new Intent(this, LoginActivity.class));
+    }
 
 }
