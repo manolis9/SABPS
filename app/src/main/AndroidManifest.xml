@@ -35,6 +35,7 @@
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -53,7 +54,8 @@
         <activity
             android:name="com.example.mazdis.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name="com.example.mazdis.activities.RegistrationActivity"></activity>
+        <activity android:name="com.example.mazdis.activities.RegistrationActivity" />
+        <activity android:name="com.example.mazdis.activities.ContactUs"></activity>
     </application>
 
 </manifest>

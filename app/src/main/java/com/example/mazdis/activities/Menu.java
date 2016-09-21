@@ -39,6 +39,16 @@ public abstract class Menu extends BaseAuthenticatedActivity{
             }
         });
 
+        findViewById(R.id.contact_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                startActivity(new Intent(Menu.this, ContactUs.class));
+                finish();
+
+            }
+        });
+
     }
 }
 
