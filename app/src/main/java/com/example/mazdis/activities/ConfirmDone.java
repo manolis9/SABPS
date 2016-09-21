@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
 
@@ -21,7 +22,10 @@ public class ConfirmDone extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.8), (int) (height*0.2));
+        getWindow().setLayout((int) (width*0.8), (int) (height*0.3));
+
+        TextView headerView = (TextView) findViewById(R.id.header_textview);
+        headerView.setPadding(0,50,0,50);
 
     }
 

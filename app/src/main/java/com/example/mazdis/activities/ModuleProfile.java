@@ -22,7 +22,10 @@ public class ModuleProfile extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.6), (int) (height*0.6));
+        getWindow().setLayout((int) (width*0.7), (int) (height*0.4));
+
+        TextView headerView = (TextView) findViewById(R.id.header_textview);
+        headerView.setPadding(0,70,0,70);
 
         TextView title = (TextView) findViewById(R.id.title_textview);
         TextView address = (TextView) findViewById(R.id.address_textview);

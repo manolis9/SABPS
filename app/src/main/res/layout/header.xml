@@ -15,6 +15,7 @@
         android:paddingBottom="50dp"
         android:layout_gravity="center_horizontal"
         android:textColor="#ffffff"
+        android:id="@+id/header_textview"
         />
 
 </FrameLayout>
