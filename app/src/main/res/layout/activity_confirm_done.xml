@@ -20,7 +20,9 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="Are you done with this booking?"
+           android:textSize="16sp"
            android:id="@+id/confirmation_textview"
+           android:layout_marginBottom="10dp"
            />
 
         <LinearLayout

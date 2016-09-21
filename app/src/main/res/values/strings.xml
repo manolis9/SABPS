@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SABPS</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">SABPS</string>
     <string name="title_activity_reserved_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
 
