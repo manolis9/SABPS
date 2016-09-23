@@ -16,26 +16,29 @@
             android:layout_height="wrap_content"
             android:text="Contact Us"
             android:textSize="24sp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="60dp"
             android:gravity="center_horizontal" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SABPS email: sabps@mazdis.com"
-            android:layout_marginBottom="20dp"/>
+            android:text="SABPS email:\nsabps@mazdis.com"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SABPS Residential email: sabpsRes@mazdis.com"
-            android:layout_marginBottom="20dp"/>
+            android:text="SABPS Residential email:\nsabpsRes@mazdis.com"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Toll-free phone #: 778-319-6536"/>
+            android:text="Toll-free phone #:\n778-319-6536"
+            android:gravity="center_horizontal"/>
 
     </LinearLayout>
 

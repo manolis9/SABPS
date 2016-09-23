@@ -14,31 +14,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Find Parking"
-        android:id="@+id/find_parking_button"/>
+        android:id="@+id/find_parking_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My Account"
-        android:id="@+id/my_account_button"/>
+        android:id="@+id/my_account_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My Bookings"
-        android:id="@+id/my_bookings_button"/>
+        android:id="@+id/my_bookings_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:id="@+id/settings_button"/>
+        android:id="@+id/settings_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Contact Us"
-        android:id="@+id/contact_button"/>
+        android:id="@+id/contact_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
 
 
 </LinearLayout>

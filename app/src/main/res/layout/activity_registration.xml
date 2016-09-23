@@ -32,7 +32,9 @@
             android:layout_height="wrap_content"
             android:hint="Full Name"
             android:id="@+id/name_registration_edittext"
-            android:paddingTop="50dp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:layout_marginTop="50dp"
             />
 
         <EditText
@@ -40,6 +42,8 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:id="@+id/email_registration_edittext"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             />
 
         <EditText
@@ -47,6 +51,8 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:id="@+id/password_registration_edittext"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             />
 
         <Button

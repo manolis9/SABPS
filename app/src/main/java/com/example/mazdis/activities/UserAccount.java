@@ -119,8 +119,6 @@ public class UserAccount extends Menu{
                 addressField.setText(map.get("address"));
                 phoneNumberField.setText(map.get("phone number"));
 
-                Log.v("E_VALUE:" , map.get("name"));
-
             }
 
             @Override
