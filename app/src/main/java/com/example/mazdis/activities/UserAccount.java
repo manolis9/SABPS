@@ -35,7 +35,8 @@ public class UserAccount extends Menu{
     private DatabaseReference mDatabase;
 
     @Override
-    protected void onSabpsCreate(Bundle savedState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
 
         nameField = (EditText) findViewById(R.id.name_edittext);
@@ -50,6 +51,12 @@ public class UserAccount extends Menu{
 
         DbToEditTexts();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu){
+        return true;
+    }
+
 
     public void logout(View view){
 

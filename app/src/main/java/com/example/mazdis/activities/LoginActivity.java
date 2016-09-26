@@ -1,5 +1,6 @@
 package com.example.mazdis.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,12 +34,13 @@ public class LoginActivity extends BaseActivity {
         emailField = (EditText) findViewById(R.id.email_login_edittext);
         passwordField = (EditText) findViewById(R.id.password_login_edittext);
 
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
                 if (firebaseAuth.getCurrentUser() != null) {
-                    application.getAuth().getUser().setLoggedIn(true);
+                   // application.getAuth().getUser().setLoggedIn(true);
                     startActivity(new Intent(LoginActivity.this, MapsActivity.class));
                     finish();
                 }
@@ -78,7 +80,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void startRegistration(View view){
-        application.getAuth().getUser().setLoggedIn(true);
+        //application.getAuth().getUser().setLoggedIn(true);
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
         finish();
     }

@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class ReservedMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 

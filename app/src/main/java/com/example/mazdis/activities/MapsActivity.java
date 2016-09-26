@@ -24,7 +24,8 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     @Override
-    protected void onSabpsCreate(Bundle savedState) {
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

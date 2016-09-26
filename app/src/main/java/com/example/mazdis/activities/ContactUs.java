@@ -8,8 +8,8 @@ import com.example.mazdis.sabps.R;
 public class ContactUs extends Menu {
 
     @Override
-    protected void onSabpsCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
     }
 }
