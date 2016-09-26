@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
 
-public class ConfirmDone extends AppCompatActivity {
+public class ConfirmDone extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

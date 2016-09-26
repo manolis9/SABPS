@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -35,8 +36,8 @@ public class UserAccount extends Menu{
     private DatabaseReference mDatabase;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
         setContentView(R.layout.activity_user_account);
 
         nameField = (EditText) findViewById(R.id.name_edittext);
@@ -54,7 +55,18 @@ public class UserAccount extends Menu{
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu){
-        return true;
+
+        getMenuInflater().inflate(R.menu.account_action_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == R.id.action_edit){
+            enableEditTexts(true);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

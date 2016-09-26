@@ -11,7 +11,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends BaseActivity {
 
     private static int SPLASH_SCREEN_DELAY = 300;
     private FirebaseAuth.AuthStateListener mAuthListener;

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
 
-public class ModuleProfile extends AppCompatActivity {
+public class ModuleProfile extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
