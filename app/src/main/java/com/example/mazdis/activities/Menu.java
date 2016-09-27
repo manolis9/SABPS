@@ -23,6 +23,7 @@ public abstract class Menu extends BaseActivity{
 
                 mProgress.setMessage("Starting Map...");
                 mProgress.show();
+                mProgress.dismiss();
                 startActivity(new Intent(Menu.this, MapsActivity.class));
                 finish();
             }

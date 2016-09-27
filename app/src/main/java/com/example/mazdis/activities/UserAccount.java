@@ -103,11 +103,13 @@ public class UserAccount extends Menu{
 
         String user_id = mAuth.getCurrentUser().getUid();
         DatabaseReference current_user_db = mDatabase.child(user_id);
+
         current_user_db.child("name").setValue(name);
         current_user_db.child("username").setValue(username);
         current_user_db.child("email").setValue(email);
         current_user_db.child("address").setValue(address);
         current_user_db.child("phone number").setValue(phoneNumber);
+
 
     }
 
