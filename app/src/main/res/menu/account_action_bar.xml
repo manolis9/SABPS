@@ -5,8 +5,13 @@
     tools:context=".UserAccount">
 
     <item
-        android:id="@+id/action_edit"
         android:title="Edit"
+        android:id="@+id/action_edit"
         app:showAsAction="always" />
+
+    <item
+        android:title="Save"
+        android:id="@+id/action_save"
+        app:showAsAction="never" />
 
 </menu>

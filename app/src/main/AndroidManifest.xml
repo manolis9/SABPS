@@ -47,7 +47,9 @@
 
         <activity android:name="com.example.mazdis.activities.LoginActivity" />
 
-        <activity android:name="com.example.mazdis.activities.UserAccount" />
+        <activity android:name="com.example.mazdis.activities.UserAccount"
+            android:theme="@style/AppTheme.AccountTheme"/>
+
         <activity
             android:name="com.example.mazdis.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />

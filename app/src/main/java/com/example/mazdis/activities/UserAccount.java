@@ -9,6 +9,7 @@ import android.view.ActionMode;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.firebase.client.AuthData;
@@ -34,6 +35,7 @@ public class UserAccount extends Menu{
     private FirebaseAuth mAuth;
     private Firebase mRef;
     private DatabaseReference mDatabase;
+    private MenuItem saveItem;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -57,13 +59,22 @@ public class UserAccount extends Menu{
     public boolean onCreateOptionsMenu(android.view.Menu menu){
 
         getMenuInflater().inflate(R.menu.account_action_bar, menu);
-        return super.onCreateOptionsMenu(menu);
+        saveItem = menu.findItem(R.id.action_save);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == R.id.action_edit){
-            enableEditTexts(true);
+            editInfo();
+            saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            return true;
+        }
+        if(item.getItemId() == R.id.action_save){
+            saveInfo();
+            saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            Toast.makeText(this, "Saved Changes", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -77,11 +88,11 @@ public class UserAccount extends Menu{
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    public void editInfo(View view){
+    public void editInfo(){
         enableEditTexts(true);
     }
 
-    public void saveInfo(View view){
+    public void saveInfo(){
         enableEditTexts(false);
 
         String name = nameField.getText().toString().trim();
