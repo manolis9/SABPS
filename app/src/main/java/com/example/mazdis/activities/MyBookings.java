@@ -1,14 +1,12 @@
 package com.example.mazdis.activities;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Layout;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.firebase.client.DataSnapshot;
@@ -24,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBookings extends Menu {
+public class MyBookings extends Menu  {
 
 
     private FirebaseAuth mAuth;
@@ -52,12 +50,17 @@ public class MyBookings extends Menu {
 
                 Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
 
+                if(td != null) {
+
                 List<Object> bookings = new ArrayList<>(td.values());
-                for(int i = bookings.size()-1; i >= 0; i--) {
 
-                   createTextView(bookings.get(i).toString());
-                }
 
+                    for (int i = bookings.size() - 1; i >= 0; i--) {
+
+                        createTextView(bookings.get(i).toString());
+                    }
+
+                } else Toast.makeText(MyBookings.this, "No past bookings", Toast.LENGTH_LONG).show();
             }
 
             @Override
