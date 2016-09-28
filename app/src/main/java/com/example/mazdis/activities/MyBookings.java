@@ -2,9 +2,11 @@ package com.example.mazdis.activities;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBookings extends AppCompatActivity {
+public class MyBookings extends Menu {
 
 
     private FirebaseAuth mAuth;
@@ -51,9 +53,9 @@ public class MyBookings extends AppCompatActivity {
                 Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
 
                 List<Object> bookings = new ArrayList<>(td.values());
-                for(int i = 0; i < bookings.size(); i++) {
+                for(int i = bookings.size()-1; i >= 0; i--) {
 
-                    Log.v("booking " + i + ": ", bookings.get(i).toString());
+                   createTextView(bookings.get(i).toString());
                 }
 
             }
@@ -64,20 +66,23 @@ public class MyBookings extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     public void createTextView(String bookingTitle){
 
         String user_id = mAuth.getCurrentUser().getUid();
-        Firebase current_mRef = mRef.child("Users").child(user_id).child("bookings");
+        Firebase current_mRef = mRef.child("Users").child(user_id).child("bookings").child(bookingTitle);
 
         current_mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.my_bookings_layout);
+                LinearLayout MainLinearLayout = (LinearLayout)findViewById(R.id.my_bookings_layout);
+
+                LinearLayout innerLinearLayout = createLinearLayout();
+
+                MainLinearLayout.addView(innerLinearLayout);
+
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
 
                 TextView title = new TextView(MyBookings.this);
@@ -85,35 +90,35 @@ public class MyBookings extends AppCompatActivity {
                 title.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(title);
+                innerLinearLayout.addView(title);
 
                 TextView address = new TextView(MyBookings.this);
                 address.setText(map.get("address"));
                 address.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(address);
+                innerLinearLayout.addView(address);
 
                 TextView date = new TextView(MyBookings.this);
                 date.setText(map.get("date"));
                 date.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(date);
+                innerLinearLayout.addView(date);
 
                 TextView startTime = new TextView(MyBookings.this);
                 startTime.setText(map.get("start time"));
                 startTime.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(startTime);
+                innerLinearLayout.addView(startTime);
 
                 TextView endTime =  new TextView(MyBookings.this);
                 endTime.setText(map.get("end time"));
                 endTime.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(endTime);
+                innerLinearLayout.addView(endTime);
 
             }
 
@@ -122,6 +127,21 @@ public class MyBookings extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public LinearLayout createLinearLayout(){
+
+        LinearLayout layout = new LinearLayout(MyBookings.this);
+
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams innerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        innerLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        innerLayoutParams.setMargins(100, 0, 100, 100);
+        layout.setLayoutParams(innerLayoutParams);
+
+        return layout;
     }
 }
 
