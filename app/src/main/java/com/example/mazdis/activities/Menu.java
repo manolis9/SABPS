@@ -57,6 +57,16 @@ public abstract class Menu extends BaseActivity{
             }
         });
 
+        findViewById(R.id.my_bookings_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                startActivity(new Intent(Menu.this, MyBookings.class));
+                finish();
+
+            }
+        });
+
     }
 }
 

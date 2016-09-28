@@ -48,7 +48,7 @@ public class RegistrationActivity extends BaseActivity {
     public void startMap(View view){
 
         final String name = nameField.getText().toString().trim();
-        String email = emailField.getText().toString().trim();
+        final String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
 
         if(TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
@@ -69,6 +69,7 @@ public class RegistrationActivity extends BaseActivity {
                         String user_id = mAuth.getCurrentUser().getUid();
                         DatabaseReference current_user_db = mDatabase.child(user_id);
                         current_user_db.child("name").setValue(name);
+                        current_user_db.child("email").setValue(email);
 
                         mProgress.dismiss();
                         Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_LONG).show();

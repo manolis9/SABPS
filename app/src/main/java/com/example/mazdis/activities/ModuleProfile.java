@@ -52,7 +52,7 @@ public class ModuleProfile extends BaseActivity {
         priceTextView.setText('$' + rawPrice);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
     }
@@ -80,21 +80,24 @@ public class ModuleProfile extends BaseActivity {
         String startTime = timeFormat.format(c.getTime());
         String date = dateFormat.format(c.getTime());
 
-        String bookingTitle = (titleTextView.getText().toString() + date + startTime);
+        String bookingTitle = (date + " " + startTime + " " + titleTextView.getText().toString());
 
         String user_id = mAuth.getCurrentUser().getUid();
-        DatabaseReference current_user_db = mDatabase.child(user_id).child("bookings").child(bookingTitle);
+        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
 
         current_user_db.child("date").setValue(date);
         current_user_db.child("start time").setValue(startTime);
         current_user_db.child("title").setValue(titleTextView.getText().toString());
         current_user_db.child("address").setValue(addressTextView.getText().toString());
 
+        DatabaseReference booking_db = mDatabase.child("Booking Titles");
+
+        booking_db.child(bookingTitle).setValue(bookingTitle);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("string_id", bookingTitle);
         editor.commit();
-
 
     }
 }
