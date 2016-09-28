@@ -40,7 +40,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 //        currentBooking.setOnClickListener(new View.OnClickListener(){
 //            @Override
 //            public void onClick(View v){
-//                startActivity(new Intent(ReservedMapsActivity.this, ReservedMapsActivity.class));
+//                startActivity(new Intent(Menu.class, ReservedMapsActivity.class));
 //                finish();
 //            }
 //        });
