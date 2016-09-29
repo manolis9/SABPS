@@ -40,16 +40,15 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         mProgress = new ProgressDialog(this);
+//
+//        Button currentBooking = (Button) findViewById(R.id.find_parking_button);
+//        currentBooking.setText("Current Booking");
 
-        Button currentBooking = (Button) findViewById(R.id.find_parking_button);
-        currentBooking.setText("Current Booking");
-//        currentBooking.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                startActivity(new Intent(Menu.class, ReservedMapsActivity.class));
-//                finish();
-//            }
-//        });
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("altMenuFlag", 1);
+        editor.commit();
+
     }
 
     @Override

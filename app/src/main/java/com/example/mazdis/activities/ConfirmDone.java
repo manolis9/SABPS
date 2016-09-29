@@ -57,7 +57,6 @@ public class ConfirmDone extends BaseActivity {
 
     public void completeBooking(){
 
-
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         Calendar c = Calendar.getInstance();
         String endTime = timeFormat.format(c.getTime());
@@ -69,6 +68,10 @@ public class ConfirmDone extends BaseActivity {
         DatabaseReference current_user_db = mDatabase.child(user_id).child("bookings").child(bookingTitle);
 
         current_user_db.child("end time").setValue(endTime);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("altMenuFlag", 0);
+        editor.commit();
     }
 
 }
