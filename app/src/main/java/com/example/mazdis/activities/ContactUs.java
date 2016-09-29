@@ -12,4 +12,9 @@ public class ContactUs extends Menu {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 }

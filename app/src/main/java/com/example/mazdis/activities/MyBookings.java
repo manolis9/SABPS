@@ -41,6 +41,11 @@ public class MyBookings extends Menu  {
         createTextViews();
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     public void createTextViews() {
         final Firebase search_mRef = mRef.child("Booking Titles");
 

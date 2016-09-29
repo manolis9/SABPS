@@ -1,10 +1,13 @@
 package com.example.mazdis.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import java.util.List;
 public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mProgress = new ProgressDialog(this);
+
         Button currentBooking = (Button) findViewById(R.id.find_parking_button);
         currentBooking.setText("Current Booking");
 //        currentBooking.setOnClickListener(new View.OnClickListener(){
@@ -44,6 +50,11 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 //                finish();
 //            }
 //        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     @Override
@@ -95,9 +106,18 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     public void placeMarker(){
 
-        String reservedAddress = getIntent().getStringExtra("reservedAddress");
-        String reservedTitle = getIntent().getStringExtra("reservedTitle");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String reservedAddress = prefs.getString("moduleAddress", "no id");
+        String reservedTitle = prefs.getString("moduleTitle", "no id");
 
+        mProgress.setMessage("Loading Map...");
+        mProgress.show();
+
+        while(reservedAddress == null){
+           reservedAddress = prefs.getString("moduleAddress", "no id");
+        }
+
+        mProgress.dismiss();
         mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
     }

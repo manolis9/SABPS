@@ -59,14 +59,9 @@ public class ModuleProfile extends BaseActivity {
 
     public void startReservedMap(View view){
 
-        String reservedAddress = addressTextView.getText().toString();
-        String reservedTitle = titleTextView.getText().toString();
-
         createBooking();
 
         Intent intent = new Intent(this, ReservedMapsActivity.class);
-        intent.putExtra("reservedAddress", reservedAddress);
-        intent.putExtra("reservedTitle", reservedTitle);
         startActivity(intent);
         finish();
 
@@ -96,7 +91,10 @@ public class ModuleProfile extends BaseActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("string_id", bookingTitle);
+        editor.putString("bookingTitle", bookingTitle);
+        editor.putString("moduleAddress", addressTextView.getText().toString());
+        editor.putString("moduleTitle", titleTextView.getText().toString());
+
         editor.commit();
 
     }

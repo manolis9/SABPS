@@ -1,5 +1,6 @@
 package com.example.mazdis.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import java.util.List;
 public class MapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -31,7 +33,13 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mProgress = new ProgressDialog(this);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     @Override
@@ -52,9 +60,16 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
                            android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1340);
         }
 
-            ArrayList<Module> list = new ArrayList<>();
+        ArrayList<Module> list = new ArrayList<>();
+        modulesList(list);
+        mProgress.setMessage("Loading Map...");
+        mProgress.show();
+        while(list == null) {
             modulesList(list);
-            placeMarker(list);
+        }
+
+        mProgress.dismiss();
+        placeMarker(list);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

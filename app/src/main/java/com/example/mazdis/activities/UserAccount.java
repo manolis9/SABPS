@@ -56,6 +56,11 @@ public class UserAccount extends Menu{
     }
 
     @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu){
 
         getMenuInflater().inflate(R.menu.account_action_bar, menu);

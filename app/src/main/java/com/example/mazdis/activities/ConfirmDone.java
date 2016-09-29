@@ -63,7 +63,7 @@ public class ConfirmDone extends BaseActivity {
         String endTime = timeFormat.format(c.getTime());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String bookingTitle = prefs.getString("string_id", "no id");
+        String bookingTitle = prefs.getString("bookingTitle", "no id");
 
         String user_id = mAuth.getCurrentUser().getUid();
         DatabaseReference current_user_db = mDatabase.child(user_id).child("bookings").child(bookingTitle);
