@@ -23,6 +23,7 @@ public class ModuleProfile extends BaseActivity {
 
     private TextView titleTextView;
     private TextView addressTextView;
+    private TextView rateTextView;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -44,12 +45,12 @@ public class ModuleProfile extends BaseActivity {
 
         titleTextView = (TextView) findViewById(R.id.title_textview);
         addressTextView = (TextView) findViewById(R.id.address_textview);
-        TextView priceTextView = (TextView) findViewById(R.id.price_textview);
+        rateTextView = (TextView) findViewById(R.id.rate_textview);
 
         titleTextView.setText(getIntent().getStringExtra("title"));
         addressTextView.setText(getIntent().getStringExtra("address"));
-        String rawPrice = getIntent().getStringExtra("price");
-        priceTextView.setText('$' + rawPrice);
+        String rate = getIntent().getStringExtra("rate");
+        rateTextView.setText('$' + rate);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -70,7 +71,7 @@ public class ModuleProfile extends BaseActivity {
     public void createBooking(){
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         Calendar c = Calendar.getInstance();
         String startTime = timeFormat.format(c.getTime());
         String date = dateFormat.format(c.getTime());
@@ -92,8 +93,10 @@ public class ModuleProfile extends BaseActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("bookingTitle", bookingTitle);
+        editor.putString("bookingStartTime", startTime);
         editor.putString("moduleAddress", addressTextView.getText().toString());
         editor.putString("moduleTitle", titleTextView.getText().toString());
+        editor.putString("moduleRate", rateTextView.getText().toString());
 
         editor.commit();
 

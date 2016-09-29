@@ -109,7 +109,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
                 Intent intent = new Intent(this, ModuleProfile.class);
                 intent.putExtra("title", list.get(i).getTitle());
                 intent.putExtra("address", list.get(i).getAddress());
-                intent.putExtra("price", String.valueOf(list.get(i).getPrice()));
+                intent.putExtra("rate", String.valueOf(list.get(i).getRate()));
                 startActivity(intent);
                 break;
             }

@@ -128,6 +128,13 @@ public class MyBookings extends Menu  {
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(endTime);
 
+                TextView cost = new TextView(MyBookings.this);
+                cost.setText(map.get("cost"));
+                cost.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                innerLinearLayout.addView(cost);
+
             }
 
             @Override

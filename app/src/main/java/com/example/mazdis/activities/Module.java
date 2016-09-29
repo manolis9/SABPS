@@ -4,14 +4,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Module {
     private String title;
-    private double price;
+    private double rate;
     private LatLng latLng;
     private String address;
 
-    public Module(String title, String address, double price) {
+    public Module(String title, String address, double rate) {
         this.title = title;
         this.address = address;
-        this.price = price;
+        this.rate = rate;
 
     }
 
@@ -22,8 +22,8 @@ public class Module {
 
     public String getAddress() { return address; }
 
-    public double getPrice(){
-        return price;
+    public double getRate(){
+        return rate;
     }
 
     public LatLng getLatLng(){
