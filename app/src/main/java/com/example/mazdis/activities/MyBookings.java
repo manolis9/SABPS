@@ -50,7 +50,9 @@ public class MyBookings extends Menu  {
     * its fields.
     */
     public void createTextViews() {
-        final Firebase search_mRef = mRef.child("Booking Titles");
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        final Firebase search_mRef = mRef.child("Users").child(user_id).child("Booking Titles");
 
         search_mRef.addValueEventListener(new ValueEventListener() {
             @Override

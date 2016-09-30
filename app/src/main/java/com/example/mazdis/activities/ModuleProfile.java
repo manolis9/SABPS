@@ -75,8 +75,8 @@ public class ModuleProfile extends BaseActivity {
 
     /* Creates a new booking in the database under the current user. The
     * booking includes the current date and time and the SABPS module title
-    * and address. The method also creates a new booking title under "Booking Titles".
-    * The bookings info and the booking title are added to Shared Preferences.
+    * and address. The method also creates a new booking title under the current user's
+    * "Booking Titles". The bookings info and the booking title are added to Shared Preferences.
     */
     public void createBooking(){
 
@@ -96,7 +96,7 @@ public class ModuleProfile extends BaseActivity {
         current_user_db.child("title").setValue(titleTextView.getText().toString());
         current_user_db.child("address").setValue(addressTextView.getText().toString());
 
-        DatabaseReference booking_db = mDatabase.child("Booking Titles");
+        DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
 
         booking_db.child(bookingTitle).setValue(bookingTitle);
 
