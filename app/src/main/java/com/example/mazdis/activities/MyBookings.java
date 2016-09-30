@@ -46,6 +46,9 @@ public class MyBookings extends Menu  {
         moveTaskToBack(true);
     }
 
+    /* Creates a Linear Layout for every booking that exists in the database, and a textview for every one of
+    * its fields.
+    */
     public void createTextViews() {
         final Firebase search_mRef = mRef.child("Booking Titles");
 
@@ -57,7 +60,7 @@ public class MyBookings extends Menu  {
 
                 if(td != null) {
 
-                List<Object> bookings = new ArrayList<>(td.values());
+                List<Object> bookings = new ArrayList<>(td.values()); //list of all booking titles
 
 
                     for (int i = bookings.size() - 1; i >= 0; i--) {
@@ -76,6 +79,10 @@ public class MyBookings extends Menu  {
 
     }
 
+    /* Takes a booking title and creates a textview for every field of the booking the title corresponds to.
+    *  It then adds the textviews to a new Linear Layout.
+    *  @Requires: the booking title should be in the same form it appears in the database.
+    */
     public void createTextView(String bookingTitle){
 
         String user_id = mAuth.getCurrentUser().getUid();
@@ -145,6 +152,7 @@ public class MyBookings extends Menu  {
 
     }
 
+    /* Creates a new linear layout and sets its parameters */
     public LinearLayout createLinearLayout(){
 
         LinearLayout layout = new LinearLayout(MyBookings.this);

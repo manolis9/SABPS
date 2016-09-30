@@ -45,6 +45,10 @@ public class RegistrationActivity extends BaseActivity {
 
     }
 
+    /* Once the user clicks Register, their login info gets saved in the database
+    * and in Firebase->Auth and MapsActivity starts. If any of the registration fields are left empty,
+    * a Toast saying "Fields are empty" appears.
+    */
     public void startMap(View view){
 
         final String name = nameField.getText().toString().trim();

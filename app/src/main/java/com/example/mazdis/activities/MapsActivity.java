@@ -37,6 +37,9 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
         mProgress = new ProgressDialog(this);
 
+        /* The menu should have a "Find Parking" button instead of a "Current Booking"
+        * button so set the altMenuFlag to 0
+        */
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
@@ -67,17 +70,19 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
                            android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1340);
         }
 
-        ArrayList<Module> list = new ArrayList<>();
-        modulesList(list);
-        mProgress.setMessage("Loading Map...");
-        mProgress.show();
-        while(list == null) {
-            modulesList(list);
-        }
 
-        mProgress.dismiss();
-        placeMarker(list);
+//        mProgress.setMessage("Loading Map...");
+//        mProgress.show();
+//        while(list == null) {
+//            list = modulesList();
+//        }
+//
+//        mProgress.dismiss();
+        placeMarkers();
 
+        /* Once a marker is tapped, start ModuleProfile with the info of the
+        *  SABPS module the marker corresponds to
+        */
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -89,7 +94,12 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
 
     }
 
-    public void placeMarker(ArrayList<Module> list){
+    /* Takes a list of SABPS modules and places a marker at the location of every SABPS module on the list
+    *  @Requires: the list should not be null
+    */
+    public void placeMarkers(){
+
+        ArrayList<Module> list = modulesList();
 
         for(int i = 0; i < list.size(); i++) {
             mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
@@ -97,10 +107,12 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         }
     }
 
+    /* Takes a marker as an input and starts ModuleProfile Activity with the info
+    *  of the SABPS module the marker corresponds to.
+    */
     public void showModule(Marker marker){
 
-        ArrayList<Module> list = new ArrayList<>();
-        modulesList(list);
+        ArrayList<Module> list = modulesList();
 
         for(int i = 0; i < list.size(); i++){
 
@@ -118,7 +130,10 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
 
     }
 
-    public void modulesList(ArrayList<Module> list){
+    /* Returns a list of SABPS modules*/
+    public ArrayList modulesList(){
+
+        ArrayList<Module> list = new ArrayList<>();
 
         Module module1 = new Module("SABPS SUB", "6138 Student Union Blvd, Vancouver, BC V6T 1Z1", 1.00);
         list.add(module1);
@@ -142,8 +157,14 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         list.add(module10);
         Module module11 = new Module("SABPS Alma", "2565 Alma St, Vancouver, BC V6R 3R8", 1.00);
         list.add(module11);
+
+        return list;
     }
 
+    /* Given a context and an address, this method returns a LatLng object corresponding
+    *  to that address.
+    *  @Requires: the address has to be valid.
+    */
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);

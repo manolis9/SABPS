@@ -33,7 +33,7 @@ public class LoginActivity extends BaseActivity {
         emailField = (EditText) findViewById(R.id.email_login_edittext);
         passwordField = (EditText) findViewById(R.id.password_login_edittext);
 
-
+        /* If user is logged in, start MapsActivity */
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -47,6 +47,9 @@ public class LoginActivity extends BaseActivity {
         };
     }
 
+    /* If the user is already logged in send them directly to MapsActivity. If not,
+    *  start this activity.
+    */
     @Override
     protected void onStart(){
         super.onStart();
@@ -54,6 +57,12 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    /* When the "Login" button is tapped, this method checks if the login info entered
+     * by the user in the edittexts is correct.
+     * If yes, the AuthStateListener gets notified and logs the user in. If not,
+     * a Toast appears saying "Login problem". If the user has left a field empty,
+     * a Toast appears saying "Fields are empty".
+     */
     public void doLogin(View view) {
 
         String email = emailField.getText().toString();
@@ -69,7 +78,7 @@ public class LoginActivity extends BaseActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                     if (!task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Login Problem", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Login problem", Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -78,6 +87,7 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    /* If a new user taps on "Register", start RegistrationActivity. */
     public void startRegistration(View view){
         //application.getAuth().getUser().setLoggedIn(true);
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));

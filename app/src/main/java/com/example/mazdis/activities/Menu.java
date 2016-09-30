@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.example.mazdis.sabps.R;
 
+/* This class controls the buttons on the shared layout file "activity_menu" */
 public abstract class Menu extends BaseActivity{
 
     @Override
@@ -17,12 +18,18 @@ public abstract class Menu extends BaseActivity{
 
         final Button findParking = (Button) findViewById(R.id.find_parking_button);
 
+        /* Check what the altMenuFlag is set to and set the button to say "Find Parking"
+        * or "Current Booking" accordingly.
+        */
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Menu.this);
         int altMenuFlag = prefs.getInt("altMenuFlag", 0);
         if(altMenuFlag == 0){
             findParking.setText("Find Parking");
         } else findParking.setText("Current Booking");
 
+        /*If the button's text is "Find Parking", start MapsActivity when clicked.
+        * If it's "Current Booking", start ReservedMapsActivity when clicked
+        */
         findParking.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

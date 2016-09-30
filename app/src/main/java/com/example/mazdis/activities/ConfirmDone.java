@@ -28,6 +28,9 @@ public class ConfirmDone extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_done);
 
+        /* This activity will take part of the screen. Tapping out of the activity window closes
+           the activity and continues running the previous one.
+        */
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -44,18 +47,23 @@ public class ConfirmDone extends BaseActivity {
 
     }
 
+    /* Completes booking and starts MapsActivity */
     public void startMap(View view){
-
         completeBooking();
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }
 
+    /* Starts ReservedMapsActivity */
     public void backToReservedMap(View view){
         startActivity((new Intent(this, ReservedMapsActivity.class)));
         finish();
     }
 
+    /* Completes a booking by adding the booking's end time and final cost to the database,
+    *  under the correct booking. Also, after this method is called, the Menu will have a
+    *  Find Parking button instead of Current Booking button.
+    */
     public void completeBooking(){
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -80,10 +88,10 @@ public class ConfirmDone extends BaseActivity {
         editor.commit();
     }
 
-    /* Given the booking start time, end time and and rate, this method calculates the cost for a booking.
-    `  @Requires: Times should be in HH:mm format.
-       @Returns: The booking's cost as a String
-    */
+     /* Given the booking start time, end time and and rate, this method calculates the cost for a booking.
+    `*  @Requires: Times should be in HH:mm format.
+     *  @Returns: The booking's cost rounded to two decimal places, as a String
+     */
     public String calculateCost(String startTime, String endTime, String rate){
 
         String sT = startTime.replace(":",".");
