@@ -47,6 +47,11 @@ public class LoginActivity extends BaseActivity {
         };
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     /* If the user is already logged in send them directly to MapsActivity. If not,
     *  start this activity.
     */
@@ -91,7 +96,6 @@ public class LoginActivity extends BaseActivity {
     public void startRegistration(View view){
         //application.getAuth().getUser().setLoggedIn(true);
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
-        finish();
     }
 
 }

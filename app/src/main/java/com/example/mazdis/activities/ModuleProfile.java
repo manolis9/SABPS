@@ -32,6 +32,9 @@ public class ModuleProfile extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_module_profile);
 
+         /* This activity will take part of the screen. Tapping out of the activity window closes
+           the activity and continues running the previous one.
+        */
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -47,6 +50,7 @@ public class ModuleProfile extends BaseActivity {
         addressTextView = (TextView) findViewById(R.id.address_textview);
         rateTextView = (TextView) findViewById(R.id.rate_textview);
 
+        /* Set the textviews to contain the info received from MapsActivity */
         titleTextView.setText(getIntent().getStringExtra("title"));
         addressTextView.setText(getIntent().getStringExtra("address"));
         String rate = getIntent().getStringExtra("rate");
@@ -58,16 +62,22 @@ public class ModuleProfile extends BaseActivity {
 
     }
 
+    /* Once the user taps on "Reserve", a booking and a booking title
+    * are added to the database and ReservedMapsActivity starts*/
     public void startReservedMap(View view){
 
         createBooking();
-
         Intent intent = new Intent(this, ReservedMapsActivity.class);
         startActivity(intent);
         finish();
 
     }
 
+    /* Creates a new booking in the database under the current user. The
+    * booking includes the current date and time and the SABPS module title
+    * and address. The method also creates a new booking title under "Booking Titles".
+    * The bookings info and the booking title are added to Shared Preferences.
+    */
     public void createBooking(){
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

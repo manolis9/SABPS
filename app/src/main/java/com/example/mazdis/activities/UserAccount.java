@@ -68,10 +68,15 @@ public class UserAccount extends Menu{
         return true;
     }
 
+    /* If the edit button is tapped, the edittexts become enabled. The
+    * user can then edit their info and tap on save to update the database
+    * and disable the edittexts.
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+
         if(item.getItemId() == R.id.action_edit){
-            editInfo();
+            enableEditTexts(true);
             saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
             return true;
@@ -85,7 +90,7 @@ public class UserAccount extends Menu{
         return super.onOptionsItemSelected(item);
     }
 
-
+    /* By tapping on LOGOUT, the user gets logged out and LoginActivity starts*/
     public void logout(View view){
 
         mAuth.signOut();
@@ -93,11 +98,12 @@ public class UserAccount extends Menu{
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    public void editInfo(){
-        enableEditTexts(true);
-    }
 
+    /* Updates the current user's info on the database based on the info
+     * in the edittexts and disables the edittexts.
+      */
     public void saveInfo(){
+
         enableEditTexts(false);
 
         String name = nameField.getText().toString().trim();
@@ -118,6 +124,9 @@ public class UserAccount extends Menu{
 
     }
 
+    /* If bool is set to true, the edittexts become enabled; if it is
+    * set to false, the edittexts become disabled.
+    */
     public void enableEditTexts(Boolean bool){
 
         if(bool == true){
@@ -136,6 +145,12 @@ public class UserAccount extends Menu{
             phoneNumberField.setEnabled(false);
         }
     }
+
+    /* Gets the current users personal info from the database and sets it to the corresponding
+     * edittexts. It keeps checking the database for changes in the current users info and updates the
+     * edittexts accordingly. It also disables the edittexts.
+     */
+
 
     public void DbToEditTexts(){
 

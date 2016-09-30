@@ -11,10 +11,13 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 
+/* While a Splash Screen is showing, this class checks if the user is
+* already logged in or not. If they are, MapsActivity starts; if not,
+* LoginActivity starts.
+*/
 public class SplashScreen extends BaseActivity {
 
     private static int SPLASH_SCREEN_DELAY = 300;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private Firebase mRef;
 
     @Override

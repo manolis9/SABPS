@@ -40,10 +40,10 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         mProgress = new ProgressDialog(this);
-//
-//        Button currentBooking = (Button) findViewById(R.id.find_parking_button);
-//        currentBooking.setText("Current Booking");
 
+        /* The menu should have a "Current Booking" button instead of a "Find Parking"
+        * button so set the altMenuFlag to 1
+        */
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 1);
@@ -78,6 +78,10 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     }
 
+    /* Given a context and an address, this method returns a LatLng object corresponding
+     * to that address.
+     * @Requires: the address has to be valid.
+     */
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
@@ -103,6 +107,9 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         return latlng;
     }
 
+    /* Receives from SharedPreferences the SABPS module's address and title and
+    * sets a marker at that address with that title.
+    */
     public void placeMarker(){
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -121,6 +128,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
     }
 
+    /* When the user taps "Done", confirmDone activity starts*/
     public void confirmDone(View view){
         startActivity(new Intent(this, ConfirmDone.class));
     }
