@@ -27,7 +27,6 @@ import java.util.Map;
 public class UserAccount extends Menu{
 
     private EditText nameField;
-    private EditText usernameField;
     private EditText emailField;
     private EditText addressField;
     private EditText phoneNumberField;
@@ -43,7 +42,6 @@ public class UserAccount extends Menu{
         setContentView(R.layout.activity_user_account);
 
         nameField = (EditText) findViewById(R.id.name_edittext);
-        usernameField = (EditText) findViewById(R.id.username_edittext);
         emailField = (EditText) findViewById(R.id.email_edittext);
         addressField = (EditText) findViewById(R.id.address_edittext);
         phoneNumberField = (EditText) findViewById(R.id.phoneNumber_edittext);
@@ -107,7 +105,6 @@ public class UserAccount extends Menu{
         enableEditTexts(false);
 
         String name = nameField.getText().toString().trim();
-        String username = usernameField.getText().toString().trim();
         String email = emailField.getText().toString().trim();
         String address = addressField.getText().toString().trim();
         String phoneNumber = phoneNumberField.getText().toString().trim();
@@ -116,7 +113,6 @@ public class UserAccount extends Menu{
         DatabaseReference current_user_db = mDatabase.child(user_id);
 
         current_user_db.child("name").setValue(name);
-        current_user_db.child("username").setValue(username);
         current_user_db.child("email").setValue(email);
         current_user_db.child("address").setValue(address);
         current_user_db.child("phone number").setValue(phoneNumber);
@@ -132,14 +128,12 @@ public class UserAccount extends Menu{
         if(bool == true){
 
             nameField.setEnabled(true);
-            usernameField.setEnabled(true);
             emailField.setEnabled(true);
             addressField.setEnabled(true);
             phoneNumberField.setEnabled(true);
 
         } else {
             nameField.setEnabled(false);
-            usernameField.setEnabled(false);
             emailField.setEnabled(false);
             addressField.setEnabled(false);
             phoneNumberField.setEnabled(false);
@@ -166,7 +160,6 @@ public class UserAccount extends Menu{
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
 
                 nameField.setText(map.get("name"));
-                usernameField.setText(map.get("username"));
                 emailField.setText(map.get("email"));
                 addressField.setText(map.get("address"));
                 phoneNumberField.setText(map.get("phone number"));

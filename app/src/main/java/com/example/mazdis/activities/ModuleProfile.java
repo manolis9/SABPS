@@ -95,6 +95,7 @@ public class ModuleProfile extends BaseActivity {
         current_user_db.child("start time").setValue(startTime);
         current_user_db.child("title").setValue(titleTextView.getText().toString());
         current_user_db.child("address").setValue(addressTextView.getText().toString());
+        current_user_db.child("reservation confirmation email sent").setValue(false);
 
         DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
 

@@ -8,15 +8,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.mazdis.sabps.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 /* This class controls the buttons on the shared layout file "activity_menu" */
 public abstract class Menu extends BaseActivity{
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onPostCreate(Bundle savedState){
         super.onPostCreate(savedState);
 
         final Button findParking = (Button) findViewById(R.id.find_parking_button);
+        mAuth = FirebaseAuth.getInstance();
 
         /* Check what the altMenuFlag is set to and set the button to say "Find Parking"
         * or "Current Booking" accordingly.
@@ -81,6 +85,18 @@ public abstract class Menu extends BaseActivity{
 
             }
         });
+
+        findViewById(R.id.logout_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                mAuth.signOut();
+                application.getAuth().getUser().setLoggedIn(false);
+                startActivity(new Intent(Menu.this, LoginActivity.class));
+
+            }
+        });
+
 
     }
 }

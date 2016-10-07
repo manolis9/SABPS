@@ -49,6 +49,15 @@
         android:id="@+id/contact_button"
         android:background="#44E0F2F1"
         android:textColor="#ffffff"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:id="@+id/logout_button"
+        android:background="#44E0F2F1"
+        android:textColor="#ffffff"/>
+
     
 
 </LinearLayout>

@@ -82,6 +82,7 @@ public class ConfirmDone extends BaseActivity {
 
         current_user_db.child("end time").setValue(endTime);
         current_user_db.child("cost").setValue(cost);
+        current_user_db.child("completion confirmation email sent").setValue(false);
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
