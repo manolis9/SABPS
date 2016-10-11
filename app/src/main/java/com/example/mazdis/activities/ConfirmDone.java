@@ -12,11 +12,13 @@ import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 public class ConfirmDone extends BaseActivity {
 
@@ -43,7 +45,7 @@ public class ConfirmDone extends BaseActivity {
         headerView.setPadding(0,50,0,50);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -78,11 +80,12 @@ public class ConfirmDone extends BaseActivity {
         String cost = calculateCost(startTime, endTime, rate);
 
         String user_id = mAuth.getCurrentUser().getUid();
-        DatabaseReference current_user_db = mDatabase.child(user_id).child("bookings").child(bookingTitle);
+        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
 
         current_user_db.child("end time").setValue(endTime);
         current_user_db.child("cost").setValue(cost);
-        current_user_db.child("completion confirmation email sent").setValue(false);
+
+        createEmail();;
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
@@ -115,6 +118,31 @@ public class ConfirmDone extends BaseActivity {
         String costDollars = "$".concat(Double.toString(roundOff));
 
         return costDollars;
+    }
+
+    public void createEmail(){
+
+        final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+
+        current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                Map <String, String> map = (Map)dataSnapshot.getValue();
+                String userEmail = map.get("email");
+                emails.child("to").setValue(userEmail);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        emails.child("from").setValue("manolis.ioannides@mazdis.com");
+        emails.child("subject").setValue("Booking Completed");
+        emails.child("body").setValue("You completed your booking");
     }
 
 }

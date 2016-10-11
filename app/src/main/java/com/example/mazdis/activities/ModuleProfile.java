@@ -11,13 +11,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 public class ModuleProfile extends BaseActivity {
 
@@ -95,11 +100,12 @@ public class ModuleProfile extends BaseActivity {
         current_user_db.child("start time").setValue(startTime);
         current_user_db.child("title").setValue(titleTextView.getText().toString());
         current_user_db.child("address").setValue(addressTextView.getText().toString());
-        current_user_db.child("reservation confirmation email sent").setValue(false);
 
         DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
 
         booking_db.child(bookingTitle).setValue(bookingTitle);
+
+        createEmail();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
@@ -111,5 +117,30 @@ public class ModuleProfile extends BaseActivity {
 
         editor.commit();
 
+    }
+
+    public void createEmail(){
+
+        final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
+
+        String user_id = mAuth.getCurrentUser().getUid();
+        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+
+        current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                Map <String, String> map = (Map)dataSnapshot.getValue();
+                String userEmail = map.get("email");
+                emails.child("to").setValue(userEmail);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        emails.child("from").setValue("manolis.ioannides@mazdis.com");
+        emails.child("subject").setValue("Booking Confirmation");
+        emails.child("body").setValue("You made a booking");
     }
 }
