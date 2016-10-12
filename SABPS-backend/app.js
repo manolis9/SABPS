@@ -17,13 +17,13 @@ var config = {
 firebase.initializeApp(config);
 
 var smtpConfig = {
-    host: 'smtp.office365.com',
-    port: 587,
-    secure: false, // use SSL
-    auth: {
-        user: 'manolis.ioannides@mazdis.com',
-        pass: 'Joannakrupa_9'
-    }
+	host: 'smtp.office365.com',
+	port: 587,
+	secure: false, // use SSL
+	auth: {
+		user: 'manolis.ioannides@mazdis.com',
+		pass: 'Joannakrupa_9'
+	}
 };
 
 var transporter = nodemailer.createTransport(smtpConfig);
@@ -41,7 +41,7 @@ firebase.database().ref().child('Emails to Send').on('child_changed', function(e
 		to: email.to.toString(), // list of receivers
 		subject: email.subject.toString(), // Subject line
 		text: email.body.toString(), // plaintext body
-		html: '<b>' + email.body.toString()+ '</b>' // html body
+		html: '<b>' + email.body.toString() + '</b>' // html body
 	}
 
 	transporter.sendMail(mailOptions, function(error, info) {
@@ -51,7 +51,8 @@ firebase.database().ref().child('Emails to Send').on('child_changed', function(e
 		console.log('Message sent: ' + info.response);
 	});
 
+	// firebase.database().ref().child('Emails to send').off("child_changed");
 	// Remove it now that we've processed it.
-	// emailSnap.ref().remove();
+	// firebase.database().ref().child('Emails to send').child('email').remove();
 
 });

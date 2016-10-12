@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ModuleProfile extends BaseActivity {
@@ -46,10 +47,10 @@ public class ModuleProfile extends BaseActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.7), (int) (height*0.4));
+        getWindow().setLayout((int) (width * 0.7), (int) (height * 0.4));
 
         TextView headerView = (TextView) findViewById(R.id.header_textview);
-        headerView.setPadding(0,70,0,70);
+        headerView.setPadding(0, 70, 0, 70);
 
         titleTextView = (TextView) findViewById(R.id.title_textview);
         addressTextView = (TextView) findViewById(R.id.address_textview);
@@ -69,7 +70,7 @@ public class ModuleProfile extends BaseActivity {
 
     /* Once the user taps on "Reserve", a booking and a booking title
     * are added to the database and ReservedMapsActivity starts*/
-    public void startReservedMap(View view){
+    public void startReservedMap(View view) {
 
         createBooking();
         Intent intent = new Intent(this, ReservedMapsActivity.class);
@@ -82,8 +83,9 @@ public class ModuleProfile extends BaseActivity {
     * booking includes the current date and time and the SABPS module title
     * and address. The method also creates a new booking title under the current user's
     * "Booking Titles". The bookings info and the booking title are added to Shared Preferences.
+    * Also it updates the email field which the server will see and email the user
     */
-    public void createBooking(){
+    public void createBooking() {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -119,7 +121,7 @@ public class ModuleProfile extends BaseActivity {
 
     }
 
-    public void createEmail(){
+    public void createEmail() {
 
         final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
 
@@ -129,9 +131,17 @@ public class ModuleProfile extends BaseActivity {
         current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                Map <String, String> map = (Map)dataSnapshot.getValue();
+                Map<String, String> map = (Map) dataSnapshot.getValue();
                 String userEmail = map.get("email");
-                emails.child("to").setValue(userEmail);
+
+                Map<String, String> emailFields = new HashMap<>();
+                emailFields.put("to", userEmail);
+                emailFields.put("from", "manolis.ioannides@mazdis.com");
+                emailFields.put("subject", "Booking Confirmation");
+                emailFields.put("body", "You made a booking at the following address:\n"
+                        + addressTextView.getText().toString());
+
+                emails.setValue(emailFields);
             }
 
             @Override
@@ -139,8 +149,6 @@ public class ModuleProfile extends BaseActivity {
 
             }
         });
-        emails.child("from").setValue("manolis.ioannides@mazdis.com");
-        emails.child("subject").setValue("Booking Confirmation");
-        emails.child("body").setValue("You made a booking");
+
     }
 }

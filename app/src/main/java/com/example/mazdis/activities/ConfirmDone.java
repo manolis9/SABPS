@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ConfirmDone extends BaseActivity {
@@ -39,10 +40,10 @@ public class ConfirmDone extends BaseActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width*0.8), (int) (height*0.3));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.3));
 
         TextView headerView = (TextView) findViewById(R.id.header_textview);
-        headerView.setPadding(0,50,0,50);
+        headerView.setPadding(0, 50, 0, 50);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -50,14 +51,14 @@ public class ConfirmDone extends BaseActivity {
     }
 
     /* Completes booking and starts MapsActivity */
-    public void startMap(View view){
+    public void startMap(View view) {
         completeBooking();
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }
 
     /* Starts ReservedMapsActivity */
-    public void backToReservedMap(View view){
+    public void backToReservedMap(View view) {
         startActivity((new Intent(this, ReservedMapsActivity.class)));
         finish();
     }
@@ -66,7 +67,7 @@ public class ConfirmDone extends BaseActivity {
     *  under the correct booking. Also, after this method is called, the Menu will have a
     *  Find Parking button instead of Current Booking button.
     */
-    public void completeBooking(){
+    public void completeBooking() {
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         Calendar c = Calendar.getInstance();
@@ -85,23 +86,24 @@ public class ConfirmDone extends BaseActivity {
         current_user_db.child("end time").setValue(endTime);
         current_user_db.child("cost").setValue(cost);
 
-        createEmail();;
+        createEmail();
+        ;
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
         editor.commit();
     }
 
-     /* Given the booking start time, end time and and rate, this method calculates the cost for a booking.
-    `*  @Requires: Times should be in HH:mm format.
-     *  @Returns: The booking's cost rounded to two decimal places, as a String
-     */
-    public String calculateCost(String startTime, String endTime, String rate){
+    /* Given the booking start time, end time and and rate, this method calculates the cost for a booking.
+   `*  @Requires: Times should be in HH:mm format.
+    *  @Returns: The booking's cost rounded to two decimal places, as a String
+    */
+    public String calculateCost(String startTime, String endTime, String rate) {
 
-        String sT = startTime.replace(":",".");
-        String eT = endTime.replace(":",".");
+        String sT = startTime.replace(":", ".");
+        String eT = endTime.replace(":", ".");
         String r;
-        if(rate.contains("$")) {
+        if (rate.contains("$")) {
             r = rate.replace("$", "");
         } else r = rate;
 
@@ -120,9 +122,12 @@ public class ConfirmDone extends BaseActivity {
         return costDollars;
     }
 
-    public void createEmail(){
+    public void createEmail() {
 
         final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final String moduleAddress = prefs.getString("moduleAddress", "no id");
 
         String user_id = mAuth.getCurrentUser().getUid();
         final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
@@ -130,9 +135,17 @@ public class ConfirmDone extends BaseActivity {
         current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                Map <String, String> map = (Map)dataSnapshot.getValue();
+                Map<String, String> map = (Map) dataSnapshot.getValue();
                 String userEmail = map.get("email");
-                emails.child("to").setValue(userEmail);
+
+                Map<String, String> emailFields = new HashMap<>();
+                emailFields.put("to", userEmail);
+                emailFields.put("from", "manolis.ioannides@mazdis.com");
+                emailFields.put("subject", "Booking Completed");
+                emailFields.put("body", "You completed your booking at the following address:\n"
+                        + moduleAddress);
+
+                emails.setValue(emailFields);
             }
 
             @Override
@@ -140,9 +153,7 @@ public class ConfirmDone extends BaseActivity {
 
             }
         });
-        emails.child("from").setValue("manolis.ioannides@mazdis.com");
-        emails.child("subject").setValue("Booking Completed");
-        emails.child("body").setValue("You completed your booking");
+
     }
 
 }
