@@ -23,6 +23,10 @@ import java.util.Map;
 
 public class ConfirmDone extends BaseActivity {
 
+    private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
+    private static final String EMAIL_SUBJECT = "Booking Completed";
+    private static final String EMAIL_BODY = "You completed your booking at the following address:\n";
+
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
@@ -140,9 +144,9 @@ public class ConfirmDone extends BaseActivity {
 
                 Map<String, String> emailFields = new HashMap<>();
                 emailFields.put("to", userEmail);
-                emailFields.put("from", "manolis.ioannides@mazdis.com");
-                emailFields.put("subject", "Booking Completed");
-                emailFields.put("body", "You completed your booking at the following address:\n"
+                emailFields.put("from", EMAIL_FROM);
+                emailFields.put("subject", EMAIL_SUBJECT);
+                emailFields.put("body", EMAIL_BODY
                         + moduleAddress);
 
                 emails.setValue(emailFields);

@@ -27,6 +27,11 @@ import java.util.Map;
 
 public class ModuleProfile extends BaseActivity {
 
+    private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
+    private static final String EMAIL_SUBJECT = "Booking Confirmation";
+    private static final String EMAIL_BODY = "You made a booking at the following address:\n";
+
+
     private TextView titleTextView;
     private TextView addressTextView;
     private TextView rateTextView;
@@ -136,9 +141,9 @@ public class ModuleProfile extends BaseActivity {
 
                 Map<String, String> emailFields = new HashMap<>();
                 emailFields.put("to", userEmail);
-                emailFields.put("from", "manolis.ioannides@mazdis.com");
-                emailFields.put("subject", "Booking Confirmation");
-                emailFields.put("body", "You made a booking at the following address:\n"
+                emailFields.put("from", EMAIL_FROM);
+                emailFields.put("subject", EMAIL_SUBJECT);
+                emailFields.put("body", EMAIL_BODY
                         + addressTextView.getText().toString());
 
                 emails.setValue(emailFields);
