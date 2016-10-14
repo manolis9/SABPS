@@ -101,28 +101,46 @@ public class ModuleProfile extends BaseActivity {
         String bookingTitle = (date + " " + startTime + " " + titleTextView.getText().toString());
 
         String user_id = mAuth.getCurrentUser().getUid();
-        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
 
-        current_user_db.child("date").setValue(date);
-        current_user_db.child("start time").setValue(startTime);
-        current_user_db.child("title").setValue(titleTextView.getText().toString());
-        current_user_db.child("address").setValue(addressTextView.getText().toString());
+        //Bookings field in database
+        DatabaseReference current_user_bookings = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
 
+        Map<String, String> booking = new HashMap<>();
+        booking.put("date", date);
+        booking.put("start time", startTime);
+        booking.put("address", addressTextView.getText().toString());
+        booking.put("title", titleTextView.getText().toString());
+        booking.put("rate", rateTextView.getText().toString());
+        current_user_bookings.setValue(booking);
+
+        //Booking Titles field in database
         DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
-
         booking_db.child(bookingTitle).setValue(bookingTitle);
+
+        //Booking in Progress field in database
+        DatabaseReference booking_in_progress = mDatabase.child("Users").child(user_id).child("Booking in Progress");
+
+        Map<String, String> current_booking = new HashMap<>();
+        current_booking.put("date", date);
+        current_booking.put("start time", startTime);
+        current_booking.put("address", addressTextView.getText().toString());
+        current_booking.put("module title", titleTextView.getText().toString());
+        current_booking.put("rate", rateTextView.getText().toString());
+        current_booking.put("booking title", bookingTitle);
+
+        booking_in_progress.setValue(current_booking);
 
         createEmail();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("bookingTitle", bookingTitle);
-        editor.putString("bookingStartTime", startTime);
-        editor.putString("moduleAddress", addressTextView.getText().toString());
-        editor.putString("moduleTitle", titleTextView.getText().toString());
-        editor.putString("moduleRate", rateTextView.getText().toString());
-
-        editor.commit();
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putString("bookingTitle", bookingTitle);
+//        editor.putString("bookingStartTime", startTime);
+//        editor.putString("moduleAddress", addressTextView.getText().toString());
+//        editor.putString("moduleTitle", titleTextView.getText().toString());
+//        editor.putString("moduleRate", rateTextView.getText().toString());
+//
+//        editor.commit();
 
     }
 

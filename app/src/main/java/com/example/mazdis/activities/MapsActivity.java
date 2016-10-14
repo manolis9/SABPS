@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION,
-                           android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1340);
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1340);
         }
 
 
@@ -98,12 +99,13 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     /* Takes a list of SABPS modules and places a marker at the location of every SABPS module on the list
     *  @Requires: the list should not be null
     */
-    public void placeMarkers(){
+    public void placeMarkers() {
 
         ArrayList<Module> list = modulesList();
 
-        for(int i = 0; i < list.size(); i++) {
-            mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
+        for (int i = 0; i < list.size(); i++) {
+            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
+                    .position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, list.get(i).getAddress())));
         }
     }
@@ -111,13 +113,13 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     /* Takes a marker as an input and starts ModuleProfile Activity with the info
     *  of the SABPS module the marker corresponds to.
     */
-    public void showModule(Marker marker){
+    public void showModule(Marker marker) {
 
         ArrayList<Module> list = modulesList();
 
-        for(int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
 
-            if(marker.getTitle().equals(list.get(i).getTitle())){
+            if (marker.getTitle().equals(list.get(i).getTitle())) {
 
                 Intent intent = new Intent(this, ModuleProfile.class);
                 intent.putExtra("title", list.get(i).getTitle());
@@ -132,7 +134,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     }
 
     /* Returns a list of SABPS modules*/
-    public ArrayList modulesList(){
+    public ArrayList modulesList() {
 
         ArrayList<Module> list = new ArrayList<>();
 

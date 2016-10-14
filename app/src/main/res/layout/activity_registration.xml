@@ -53,6 +53,8 @@
             android:id="@+id/password_registration_edittext"
             android:imeOptions="actionDone"
             android:singleLine="true"
+            android:inputType="textPassword"
+            android:password="true"
             />
 
         <Button

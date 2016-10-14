@@ -11,10 +11,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -75,23 +79,49 @@ public class ConfirmDone extends BaseActivity {
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         Calendar c = Calendar.getInstance();
-        String endTime = timeFormat.format(c.getTime());
+        final String endTime = timeFormat.format(c.getTime());
+
+        final String user_id = mAuth.getCurrentUser().getUid();
+        final DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking in Progress");
+
+        booking_db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> map = dataSnapshot.getValue(Map.class);
+
+                String bookingTitle = map.get("booking title");
+                String startTime = map.get("start time");
+                String rate = map.get("rate");
+                String cost = calculateCost(startTime, endTime, rate);
+
+                DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
+                booking_titles_db.child("end time").setValue(endTime);
+                booking_titles_db.child("cost").setValue(cost);
+
+                final String address = map.get("address");
+                createEmail(address);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String bookingTitle = prefs.getString("bookingTitle", "no id");
-        String startTime = prefs.getString("bookingStartTime", "no id");
-        String rate = prefs.getString("moduleRate", "no id");
+//        String bookingTitle = prefs.getString("bookingTitle", "no id");
+//        String startTime = prefs.getString("bookingStartTime", "no id");
+//        String rate = prefs.getString("moduleRate", "no id");
+//
+//        String cost = calculateCost(startTime, endTime, rate);
+//
+//        DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
+//
+//        booking_titles_db.child("end time").setValue(endTime);
+//        booking_titles_db.child("cost").setValue(cost);
 
-        String cost = calculateCost(startTime, endTime, rate);
-
-        String user_id = mAuth.getCurrentUser().getUid();
-        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
-
-        current_user_db.child("end time").setValue(endTime);
-        current_user_db.child("cost").setValue(cost);
-
-        createEmail();
-        ;
+        booking_db.removeValue();
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
@@ -126,12 +156,12 @@ public class ConfirmDone extends BaseActivity {
         return costDollars;
     }
 
-    public void createEmail() {
+    public void createEmail(final String address) {
 
         final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final String moduleAddress = prefs.getString("moduleAddress", "no id");
+//
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        final String moduleAddress = prefs.getString("moduleAddress", "no id");
 
         String user_id = mAuth.getCurrentUser().getUid();
         final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
@@ -147,7 +177,7 @@ public class ConfirmDone extends BaseActivity {
                 emailFields.put("from", EMAIL_FROM);
                 emailFields.put("subject", EMAIL_SUBJECT);
                 emailFields.put("body", EMAIL_BODY
-                        + moduleAddress);
+                        + address);
 
                 emails.setValue(emailFields);
             }

@@ -22,13 +22,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Map;
 
 public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ProgressDialog mProgress;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +47,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
         /* The menu should have a "Current Booking" button instead of a "Find Parking"
@@ -107,25 +117,45 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         return latlng;
     }
 
-    /* Receives from SharedPreferences the SABPS module's address and title and
+    /* Receives from Firebase the SABPS module's address and title and
     * sets a marker at that address with that title.
     */
     public void placeMarker(){
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String reservedAddress = prefs.getString("moduleAddress", "no id");
-        String reservedTitle = prefs.getString("moduleTitle", "no id");
+        String user_id = mAuth.getCurrentUser().getUid();
+        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("Booking in Progress");
 
-        mProgress.setMessage("Loading Map...");
-        mProgress.show();
+        current_user_db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> map = dataSnapshot.getValue(Map.class);
 
-        while(reservedAddress == null){
-           reservedAddress = prefs.getString("moduleAddress", "no id");
-        }
+                String address = map.get("address");
+                String title = map.get("title");
+                mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(ReservedMapsActivity.this, address)).title(title));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(ReservedMapsActivity.this, title)));
+            }
 
-        mProgress.dismiss();
-        mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        String reservedAddress = prefs.getString("moduleAddress", "no id");
+//        String reservedTitle = prefs.getString("moduleTitle", "no id");
+//
+//        mProgress.setMessage("Loading Map...");
+//        mProgress.show();
+//
+//        while(reservedAddress == null){
+//           reservedAddress = prefs.getString("moduleAddress", "no id");
+//        }
+//
+//        mProgress.dismiss();
+//        mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
     }
 
     /* When the user taps "Done", confirmDone activity starts*/
