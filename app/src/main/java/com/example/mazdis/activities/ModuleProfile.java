@@ -3,18 +3,13 @@ package com.example.mazdis.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -110,15 +105,16 @@ public class ModuleProfile extends BaseActivity {
         booking.put("start time", startTime);
         booking.put("address", addressTextView.getText().toString());
         booking.put("title", titleTextView.getText().toString());
-        booking.put("rate", rateTextView.getText().toString());
         current_user_bookings.setValue(booking);
 
         //Booking Titles field in database
         DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
         booking_db.child(bookingTitle).setValue(bookingTitle);
 
-
         createEmail();
+
+        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+        current_user_db.child("booking in progress").setValue("true");
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();

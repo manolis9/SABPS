@@ -3,7 +3,6 @@ package com.example.mazdis.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,14 +10,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -97,6 +92,9 @@ public class ConfirmDone extends BaseActivity {
         booking_titles_db.child("cost").setValue(cost);
 
         createEmail(address);
+
+        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+        current_user_db.child("booking in progress").setValue("false");
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);

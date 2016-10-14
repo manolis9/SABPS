@@ -1,6 +1,5 @@
 package com.example.mazdis.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
