@@ -103,6 +103,14 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
 
         ArrayList<Module> list = modulesList();
 
+        mProgress.setMessage("Loading Map...");
+        mProgress.show();
+        while(list == null) {
+            list = modulesList();
+        }
+
+        mProgress.dismiss();
+
         for (int i = 0; i < list.size(); i++) {
             mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
                     .position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));

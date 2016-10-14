@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +37,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ProgressDialog mProgress;
-    private DatabaseReference mDatabase;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +46,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
         /* The menu should have a "Current Booking" button instead of a "Find Parking"
@@ -122,40 +119,21 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     */
     public void placeMarker(){
 
-        String user_id = mAuth.getCurrentUser().getUid();
-        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id).child("Booking in Progress");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String reservedAddress = prefs.getString("moduleAddress", "no id");
+        String reservedTitle = prefs.getString("moduleTitle", "no id");
 
-        current_user_db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> map = dataSnapshot.getValue(Map.class);
+        mProgress.setMessage("Loading Map...");
+        mProgress.show();
 
-                String address = map.get("address");
-                String title = map.get("title");
-                mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(ReservedMapsActivity.this, address)).title(title));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(ReservedMapsActivity.this, title)));
-            }
+        while(reservedAddress == null){
+           reservedAddress = prefs.getString("moduleAddress", "no id");
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        String reservedAddress = prefs.getString("moduleAddress", "no id");
-//        String reservedTitle = prefs.getString("moduleTitle", "no id");
-//
-//        mProgress.setMessage("Loading Map...");
-//        mProgress.show();
-//
-//        while(reservedAddress == null){
-//           reservedAddress = prefs.getString("moduleAddress", "no id");
-//        }
-//
-//        mProgress.dismiss();
-//        mMap.addMarker(new MarkerOptions().position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
+        mProgress.dismiss();
+        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
+                .position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
     }
 
     /* When the user taps "Done", confirmDone activity starts*/

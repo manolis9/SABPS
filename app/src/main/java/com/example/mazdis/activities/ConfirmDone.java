@@ -79,49 +79,24 @@ public class ConfirmDone extends BaseActivity {
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         Calendar c = Calendar.getInstance();
-        final String endTime = timeFormat.format(c.getTime());
+        String endTime = timeFormat.format(c.getTime());
 
-        final String user_id = mAuth.getCurrentUser().getUid();
-        final DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking in Progress");
-
-        booking_db.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> map = dataSnapshot.getValue(Map.class);
-
-                String bookingTitle = map.get("booking title");
-                String startTime = map.get("start time");
-                String rate = map.get("rate");
-                String cost = calculateCost(startTime, endTime, rate);
-
-                DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
-                booking_titles_db.child("end time").setValue(endTime);
-                booking_titles_db.child("cost").setValue(cost);
-
-                final String address = map.get("address");
-                createEmail(address);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        String user_id = mAuth.getCurrentUser().getUid();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        String bookingTitle = prefs.getString("bookingTitle", "no id");
-//        String startTime = prefs.getString("bookingStartTime", "no id");
-//        String rate = prefs.getString("moduleRate", "no id");
-//
-//        String cost = calculateCost(startTime, endTime, rate);
-//
-//        DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
-//
-//        booking_titles_db.child("end time").setValue(endTime);
-//        booking_titles_db.child("cost").setValue(cost);
+        String bookingTitle = prefs.getString("bookingTitle", "no id");
+        String startTime = prefs.getString("bookingStartTime", "no id");
+        String rate = prefs.getString("moduleRate", "no id");
+        final String address = prefs.getString("moduleAddress", "no id");
 
-        booking_db.removeValue();
+        String cost = calculateCost(startTime, endTime, rate);
+
+        DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
+
+        booking_titles_db.child("end time").setValue(endTime);
+        booking_titles_db.child("cost").setValue(cost);
+
+        createEmail(address);
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
@@ -159,9 +134,6 @@ public class ConfirmDone extends BaseActivity {
     public void createEmail(final String address) {
 
         final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
-//
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        final String moduleAddress = prefs.getString("moduleAddress", "no id");
 
         String user_id = mAuth.getCurrentUser().getUid();
         final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
