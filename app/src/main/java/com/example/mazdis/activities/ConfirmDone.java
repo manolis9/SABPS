@@ -25,6 +25,19 @@ public class ConfirmDone extends BaseActivity {
     private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
     private static final String EMAIL_SUBJECT = "Booking Completed";
     private static final String EMAIL_BODY = "You completed your booking at the following address:\n";
+    private static final String FIREBASE_USER_NAME = "name";
+    private static final String FIREBASE_USER_EMAIL = "email";
+    private static final String FIREBASE_USERS = "Users";
+    private static final String FIREBASE_EMAILS_TO_SEND = "Emails to Send";
+    private static final String FIREBASE_EMAIL = "email";
+    private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
+    private static final String FIREBASE_USER_BOOKINGS = "bookings";
+    private static final String FIREBASE_BOOKING_END_TIME = "end time";
+    private static final String FIREBASE_BOOKING_COST = "cost";
+    private static final String FIREBASE_EMAIL_FROM = "from";
+    private static final String FIREBASE_EMAIL_TO = "to";
+    private static final String FIREBASE_EMAIL_SUBJECT = "subject";
+    private static final String FIREBASE_EMAIL_BODY = "body";
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -86,15 +99,15 @@ public class ConfirmDone extends BaseActivity {
 
         String cost = calculateCost(startTime, endTime, rate);
 
-        DatabaseReference booking_titles_db = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
+        DatabaseReference booking_titles_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
-        booking_titles_db.child("end time").setValue(endTime);
-        booking_titles_db.child("cost").setValue(cost);
+        booking_titles_db.child(FIREBASE_BOOKING_END_TIME).setValue(endTime);
+        booking_titles_db.child(FIREBASE_BOOKING_COST).setValue(cost);
 
         createEmail(address);
 
-        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
-        current_user_db.child("booking in progress").setValue("false");
+        DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
+        current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
@@ -131,22 +144,23 @@ public class ConfirmDone extends BaseActivity {
 
     public void createEmail(final String address) {
 
-        final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
+        final DatabaseReference emails = mDatabase.child(FIREBASE_EMAILS_TO_SEND).child(FIREBASE_EMAIL);
 
         String user_id = mAuth.getCurrentUser().getUid();
-        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+        final DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
 
         current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 Map<String, String> map = (Map) dataSnapshot.getValue();
-                String userEmail = map.get("email");
+                String userEmail = map.get(FIREBASE_USER_EMAIL);
+                String name = map.get(FIREBASE_USER_NAME);
 
                 Map<String, String> emailFields = new HashMap<>();
-                emailFields.put("to", userEmail);
-                emailFields.put("from", EMAIL_FROM);
-                emailFields.put("subject", EMAIL_SUBJECT);
-                emailFields.put("body", EMAIL_BODY
+                emailFields.put(FIREBASE_EMAIL_TO, userEmail);
+                emailFields.put(FIREBASE_EMAIL_FROM, EMAIL_FROM);
+                emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_SUBJECT);
+                emailFields.put(FIREBASE_EMAIL_BODY,"Dear " + name + ", " + EMAIL_BODY
                         + address);
 
                 emails.setValue(emailFields);

@@ -33,6 +33,10 @@ public class RegistrationActivity extends BaseActivity {
     private static final String FIREBASE_EMAILS_TO_SEND = "Emails to Send";
     private static final String FIREBASE_EMAIL = "email";
     private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
+    private static final String FIREBASE_EMAIL_FROM = "from";
+    private static final String FIREBASE_EMAIL_TO = "to";
+    private static final String FIREBASE_EMAIL_SUBJECT = "subject";
+    private static final String FIREBASE_EMAIL_BODY = "body";
 
     private EditText nameField;
     private EditText emailField;
@@ -114,10 +118,10 @@ public class RegistrationActivity extends BaseActivity {
         String name = nameField.getText().toString();
 
         Map<String, String> emailFields = new HashMap<>();
-        emailFields.put("to", userEmail);
-        emailFields.put("from", EMAIL_FROM);
-        emailFields.put("subject", EMAIL_SUBJECT);
-        emailFields.put("body", "Dear " + name + ", \n" + EMAIL_BODY);
+        emailFields.put(FIREBASE_EMAIL_TO, userEmail);
+        emailFields.put(FIREBASE_EMAIL_FROM, EMAIL_FROM);
+        emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_SUBJECT);
+        emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", \n" + EMAIL_BODY);
 
         emails.setValue(emailFields);
     }

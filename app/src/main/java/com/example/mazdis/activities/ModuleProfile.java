@@ -25,7 +25,22 @@ public class ModuleProfile extends BaseActivity {
     private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
     private static final String EMAIL_SUBJECT = "Booking Confirmation";
     private static final String EMAIL_BODY = "You made a booking at the following address:\n";
-
+    private static final String FIREBASE_USER_NAME = "name";
+    private static final String FIREBASE_USER_EMAIL = "email";
+    private static final String FIREBASE_USERS = "Users";
+    private static final String FIREBASE_EMAILS_TO_SEND = "Emails to Send";
+    private static final String FIREBASE_EMAIL = "email";
+    private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
+    private static final String FIREBASE_USER_BOOKINGS = "bookings";
+    private static final String FIREBASE_USER_BOOKING_TITLES = "Booking Titles";
+    private static final String FIREBASE_BOOKING_DATE = "date";
+    private static final String FIREBASE_BOOKING_START_TIME = "start time";
+    private static final String FIREBASE_BOOKING_ADDRESS = "address";
+    private static final String FIREBASE_BOOKING_TITLE = "title";
+    private static final String FIREBASE_EMAIL_FROM = "from";
+    private static final String FIREBASE_EMAIL_TO = "to";
+    private static final String FIREBASE_EMAIL_SUBJECT = "subject";
+    private static final String FIREBASE_EMAIL_BODY = "body";
 
     private TextView titleTextView;
     private TextView addressTextView;
@@ -98,23 +113,23 @@ public class ModuleProfile extends BaseActivity {
         String user_id = mAuth.getCurrentUser().getUid();
 
         //Bookings field in database
-        DatabaseReference current_user_bookings = mDatabase.child("Users").child(user_id).child("bookings").child(bookingTitle);
+        DatabaseReference current_user_bookings = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
         Map<String, String> booking = new HashMap<>();
-        booking.put("date", date);
-        booking.put("start time", startTime);
-        booking.put("address", addressTextView.getText().toString());
-        booking.put("title", titleTextView.getText().toString());
+        booking.put(FIREBASE_BOOKING_DATE, date);
+        booking.put(FIREBASE_BOOKING_START_TIME, startTime);
+        booking.put(FIREBASE_BOOKING_ADDRESS, addressTextView.getText().toString());
+        booking.put(FIREBASE_BOOKING_TITLE, titleTextView.getText().toString());
         current_user_bookings.setValue(booking);
 
         //Booking Titles field in database
-        DatabaseReference booking_db = mDatabase.child("Users").child(user_id).child("Booking Titles");
+        DatabaseReference booking_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKING_TITLES);
         booking_db.child(bookingTitle).setValue(bookingTitle);
 
         createEmail();
 
-        DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
-        current_user_db.child("booking in progress").setValue("true");
+        DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
+        current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("true");
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
@@ -130,22 +145,23 @@ public class ModuleProfile extends BaseActivity {
 
     public void createEmail() {
 
-        final DatabaseReference emails = mDatabase.child("Emails to Send").child("email");
+        final DatabaseReference emails = mDatabase.child(FIREBASE_EMAILS_TO_SEND).child(FIREBASE_EMAIL);
 
         String user_id = mAuth.getCurrentUser().getUid();
-        final DatabaseReference current_user_db = mDatabase.child("Users").child(user_id);
+        final DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
 
         current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 Map<String, String> map = (Map) dataSnapshot.getValue();
-                String userEmail = map.get("email");
+                String userEmail = map.get(FIREBASE_USER_EMAIL);
+                String name = map.get(FIREBASE_USER_NAME);
 
                 Map<String, String> emailFields = new HashMap<>();
-                emailFields.put("to", userEmail);
-                emailFields.put("from", EMAIL_FROM);
-                emailFields.put("subject", EMAIL_SUBJECT);
-                emailFields.put("body", EMAIL_BODY
+                emailFields.put(FIREBASE_EMAIL_TO, userEmail);
+                emailFields.put(FIREBASE_EMAIL_FROM, EMAIL_FROM);
+                emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_SUBJECT);
+                emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", " + EMAIL_BODY
                         + addressTextView.getText().toString());
 
                 emails.setValue(emailFields);
