@@ -4,15 +4,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,8 +20,9 @@ import java.util.Map;
 */
 public class SplashScreen extends BaseActivity {
 
+    private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
+    private static final String FIREBASE_USERS = "Users";
     private static int SPLASH_SCREEN_DELAY = 300;
-    private Firebase mRef;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private FirebaseAuth.AuthStateListener firebaseAuth;
@@ -37,7 +32,6 @@ public class SplashScreen extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        mRef = new Firebase("https://sabps-cd1b7.firebaseio.com/Users");
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         firebaseAuth = new FirebaseAuth.AuthStateListener() {
@@ -46,14 +40,14 @@ public class SplashScreen extends BaseActivity {
                 if(firebaseAuth.getCurrentUser() != null) {
 
                     String user_id = mAuth.getCurrentUser().getUid();
-                    DatabaseReference current_user_ref = mDatabase.child("Users").child(user_id);
+                    final DatabaseReference current_user_ref = mDatabase.child(FIREBASE_USERS).child(user_id);
 
                     current_user_ref.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                         @Override
                         public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                             Map<String, String> map = (Map) dataSnapshot.getValue();
 
-                            String booking_in_progress = map.get("booking in progress");
+                            String booking_in_progress = map.get(FIREBASE_USER_BOOKING_IN_PROGRESS);
 
                             if(booking_in_progress.equals("true")){
                                 startActivity(new Intent(SplashScreen.this, ReservedMapsActivity.class));

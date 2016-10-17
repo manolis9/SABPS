@@ -15,10 +15,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegistrationActivity extends BaseActivity {
+
+    private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
+    private static final String EMAIL_SUBJECT = "Registration Confirmation";
+    private static final String EMAIL_BODY = "Welcome to Mazdis";
+    private static final String FIREBASE_USER_NAME = "name";
+    private static final String FIREBASE_USER_EMAIL = "email";
+    private static final String FIREBASE_USERS = "Users";
+    private static final String FIREBASE_EMAILS_TO_SEND = "Emails to Send";
+    private static final String FIREBASE_EMAIL = "email";
+    private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
 
     private EditText nameField;
     private EditText emailField;
@@ -35,7 +49,7 @@ public class RegistrationActivity extends BaseActivity {
         setContentView(R.layout.activity_registration);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mProgress = new ProgressDialog(this);
 
@@ -71,20 +85,42 @@ public class RegistrationActivity extends BaseActivity {
                     if(task.isSuccessful()){
 
                         String user_id = mAuth.getCurrentUser().getUid();
-                        DatabaseReference current_user_db = mDatabase.child(user_id);
-                        current_user_db.child("name").setValue(name);
-                        current_user_db.child("email").setValue(email);
+                        DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
+
+                        Map<String, String> userInfo = new HashMap<>();
+                        userInfo.put(FIREBASE_USER_NAME, name);
+                        userInfo.put(FIREBASE_USER_EMAIL, email);
+                        userInfo.put(FIREBASE_USER_BOOKING_IN_PROGRESS, "false");
+                        current_user_db.setValue(userInfo);
+
+                        createEmail();
 
                         mProgress.dismiss();
                         Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_LONG).show();
+
                         startActivity(new Intent(RegistrationActivity.this, MapsActivity.class));
                         finish();
-
                     }
-
                 }
             });
-
         }
     }
+
+    public void createEmail() {
+
+        final DatabaseReference emails = mDatabase.child(FIREBASE_EMAILS_TO_SEND).child(FIREBASE_EMAIL);
+
+        String userEmail = emailField.getText().toString();
+        String name = nameField.getText().toString();
+
+        Map<String, String> emailFields = new HashMap<>();
+        emailFields.put("to", userEmail);
+        emailFields.put("from", EMAIL_FROM);
+        emailFields.put("subject", EMAIL_SUBJECT);
+        emailFields.put("body", "Dear " + name + ", \n" + EMAIL_BODY);
+
+        emails.setValue(emailFields);
+    }
+
 }
+
