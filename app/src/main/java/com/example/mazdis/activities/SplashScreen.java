@@ -3,7 +3,9 @@ package com.example.mazdis.activities;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.firebase.client.AuthData;
@@ -19,8 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Map;
 
 /* While a Splash Screen is showing, this class checks if the user is
-* already logged in or not. If they are, MapsActivity starts; if not,
-* LoginActivity starts.
+* already logged in or not. If they are, if a booking is in progress, ReservedMapsActivity starts,
+* otherwise MapsActivity starts; if they are not logged in, LoginActivity starts.
 */
 public class SplashScreen extends BaseActivity {
 
@@ -28,6 +30,7 @@ public class SplashScreen extends BaseActivity {
     private Firebase mRef;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +39,12 @@ public class SplashScreen extends BaseActivity {
 
         mRef = new Firebase("https://sabps-cd1b7.firebaseio.com/Users");
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        Log.v("booking in progress: ", "FU");
-
-        new Handler().postDelayed(new Runnable() {
+        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void run() {
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null) {
 
-                AuthData authData = mRef.getAuth();
-                if (authData != null) {
-                    mAuth = FirebaseAuth.getInstance();
                     String user_id = mAuth.getCurrentUser().getUid();
                     DatabaseReference current_user_ref = mDatabase.child("Users").child(user_id);
 
@@ -55,7 +54,6 @@ public class SplashScreen extends BaseActivity {
                             Map<String, String> map = (Map) dataSnapshot.getValue();
 
                             String booking_in_progress = map.get("booking in progress");
-                            Log.v("booking in progress: ", booking_in_progress);
 
                             if(booking_in_progress.equals("true")){
                                 startActivity(new Intent(SplashScreen.this, ReservedMapsActivity.class));
@@ -73,10 +71,19 @@ public class SplashScreen extends BaseActivity {
                     });
 
                 } else {
+
                     Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
+            }
+
+        };
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAuth.addAuthStateListener(firebaseAuth);
             }
         }, SPLASH_SCREEN_DELAY);
     }
