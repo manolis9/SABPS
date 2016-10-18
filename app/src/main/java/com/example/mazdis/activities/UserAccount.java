@@ -26,6 +26,12 @@ import java.util.Map;
 
 public class UserAccount extends Menu{
 
+    private static final String FIREBASE_USER_NAME = "name";
+    private static final String FIREBASE_USER_EMAIL = "email";
+    private static final String FIREBASE_USER_ADDRESS = "address";
+    private static final String FIREBASE_USER_PHONE_NUMBER = "phone number";
+    private static final String FIREBASE_USERS = "Users";
+
     private EditText nameField;
     private EditText emailField;
     private EditText addressField;
@@ -48,7 +54,7 @@ public class UserAccount extends Menu{
 
         mAuth = FirebaseAuth.getInstance();
         mRef = new Firebase("https://sabps-cd1b7.firebaseio.com/Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(FIREBASE_USERS);
 
         DbToEditTexts();
     }
@@ -112,10 +118,10 @@ public class UserAccount extends Menu{
         String user_id = mAuth.getCurrentUser().getUid();
         DatabaseReference current_user_db = mDatabase.child(user_id);
 
-        current_user_db.child("name").setValue(name);
-        current_user_db.child("email").setValue(email);
-        current_user_db.child("address").setValue(address);
-        current_user_db.child("phone number").setValue(phoneNumber);
+        current_user_db.child(FIREBASE_USER_NAME).setValue(name);
+        current_user_db.child(FIREBASE_USER_EMAIL).setValue(email);
+        current_user_db.child(FIREBASE_USER_ADDRESS).setValue(address);
+        current_user_db.child(FIREBASE_USER_PHONE_NUMBER).setValue(phoneNumber);
 
 
     }
@@ -159,10 +165,10 @@ public class UserAccount extends Menu{
 
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
 
-                nameField.setText(map.get("name"));
-                emailField.setText(map.get("email"));
-                addressField.setText(map.get("address"));
-                phoneNumberField.setText(map.get("phone number"));
+                nameField.setText(map.get(FIREBASE_USER_NAME));
+                emailField.setText(map.get(FIREBASE_USER_EMAIL));
+                addressField.setText(map.get(FIREBASE_USER_ADDRESS));
+                phoneNumberField.setText(map.get(FIREBASE_USER_PHONE_NUMBER));
 
             }
 

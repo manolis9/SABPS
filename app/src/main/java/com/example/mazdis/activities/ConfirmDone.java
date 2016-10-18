@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,6 +99,7 @@ public class ConfirmDone extends BaseActivity {
         final String address = prefs.getString("moduleAddress", "no id");
 
         String cost = calculateCost(startTime, endTime, rate);
+        Log.v("cost", cost);
 
         DatabaseReference booking_titles_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
@@ -120,26 +122,34 @@ public class ConfirmDone extends BaseActivity {
     */
     public String calculateCost(String startTime, String endTime, String rate) {
 
-        String sT = startTime.replace(":", ".");
-        String eT = endTime.replace(":", ".");
+        double hours = 0;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            Date sT = simpleDateFormat.parse(startTime);
+            Date eT = simpleDateFormat.parse(endTime);
+            long difference = eT.getTime() - sT.getTime();
+            double days = (double) (difference / (1000 * 60 * 60 * 24));
+            hours = ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
+            hours = (hours < 0 ? -hours : hours);
+
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.v("hours", Double.toString(hours));
         String r;
         if (rate.contains("$")) {
             r = rate.replace("$", "");
         } else r = rate;
-
-        double doubleStart = Double.parseDouble(sT);
-        double doubleEnd = Double.parseDouble(eT);
         double doubleRate = Double.parseDouble(r);
 
-        double cost = (doubleEnd - doubleStart) * doubleRate;
-        Log.v("cost", Double.toString(cost));
+        double cost = hours * doubleRate;
+        double roundOff = Math.round(cost * 1000.0) / 1000.0;
 
-        double roundOff = Math.round(cost * 100.0) / 100.0;
-        Log.v("costRounded", Double.toString(roundOff));
-
-        String costDollars = "$".concat(Double.toString(roundOff));
+        String costDollars = "$".concat(Double.toString((roundOff)));
 
         return costDollars;
+
     }
 
     public void createEmail(final String address) {
@@ -160,7 +170,7 @@ public class ConfirmDone extends BaseActivity {
                 emailFields.put(FIREBASE_EMAIL_TO, userEmail);
                 emailFields.put(FIREBASE_EMAIL_FROM, EMAIL_FROM);
                 emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_SUBJECT);
-                emailFields.put(FIREBASE_EMAIL_BODY,"Dear " + name + ", " + EMAIL_BODY
+                emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", " + EMAIL_BODY
                         + address);
 
                 emails.setValue(emailFields);

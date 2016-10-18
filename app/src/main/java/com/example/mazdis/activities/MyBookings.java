@@ -24,6 +24,16 @@ import java.util.Map;
 
 public class MyBookings extends Menu  {
 
+    private static final String FIREBASE_USERS = "Users";
+    private static final String FIREBASE_USER_BOOKINGS = "bookings";
+    private static final String FIREBASE_USER_BOOKING_TITLES = "Booking Titles";
+    private static final String FIREBASE_BOOKING_DATE = "date";
+    private static final String FIREBASE_BOOKING_START_TIME = "start time";
+    private static final String FIREBASE_BOOKING_END_TIME = "end time";
+    private static final String FIREBASE_BOOKING_COST = "cost";
+    private static final String FIREBASE_BOOKING_ADDRESS = "address";
+    private static final String FIREBASE_BOOKING_TITLE = "title";
+
 
     private FirebaseAuth mAuth;
     private Firebase mRef;
@@ -36,7 +46,7 @@ public class MyBookings extends Menu  {
 
         mAuth = FirebaseAuth.getInstance();
         mRef = new Firebase("https://sabps-cd1b7.firebaseio.com");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(FIREBASE_USERS);
 
         createTextViews();
     }
@@ -52,7 +62,7 @@ public class MyBookings extends Menu  {
     public void createTextViews() {
 
         String user_id = mAuth.getCurrentUser().getUid();
-        final Firebase search_mRef = mRef.child("Users").child(user_id).child("Booking Titles");
+        final Firebase search_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKING_TITLES);
 
         search_mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -88,7 +98,7 @@ public class MyBookings extends Menu  {
     public void createTextView(String bookingTitle){
 
         String user_id = mAuth.getCurrentUser().getUid();
-        Firebase current_mRef = mRef.child("Users").child(user_id).child("bookings").child(bookingTitle);
+        Firebase current_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
         current_mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -103,42 +113,42 @@ public class MyBookings extends Menu  {
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
 
                 TextView title = new TextView(MyBookings.this);
-                title.setText(map.get("title"));
+                title.setText(map.get(FIREBASE_BOOKING_TITLE));
                 title.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(title);
 
                 TextView address = new TextView(MyBookings.this);
-                address.setText(map.get("address"));
+                address.setText(map.get(FIREBASE_BOOKING_ADDRESS));
                 address.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(address);
 
                 TextView date = new TextView(MyBookings.this);
-                date.setText(map.get("date"));
+                date.setText(map.get(FIREBASE_BOOKING_DATE));
                 date.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(date);
 
                 TextView startTime = new TextView(MyBookings.this);
-                startTime.setText(map.get("start time"));
+                startTime.setText(map.get(FIREBASE_BOOKING_START_TIME));
                 startTime.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(startTime);
 
                 TextView endTime =  new TextView(MyBookings.this);
-                endTime.setText(map.get("end time"));
+                endTime.setText(map.get(FIREBASE_BOOKING_END_TIME));
                 endTime.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 innerLinearLayout.addView(endTime);
 
                 TextView cost = new TextView(MyBookings.this);
-                cost.setText(map.get("cost"));
+                cost.setText(map.get(FIREBASE_BOOKING_COST));
                 cost.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
