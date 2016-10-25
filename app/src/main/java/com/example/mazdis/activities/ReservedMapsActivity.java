@@ -53,7 +53,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     Button btn;
     DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    private Handler timeHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +67,11 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
+        registerReceiver(uiUpdated, new IntentFilter("TIME_UPDATED"));
+
         btn = (Button) findViewById(R.id.done_button);
         metersAwayText = (TextView) findViewById(R.id.meters_away_textview);
         countDownText = (TextView) findViewById(R.id.countDown_textView);
-
-        timeHandler = new Handler();
 
         /* The menu should have a "Current Booking" button instead of a "Find Parking"
         * button so set the altMenuFlag to 1
@@ -82,10 +81,10 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         editor.putInt("altMenuFlag", 1);
         editor.commit();
 
-
-        updateGUI();
         addressText = (TextView) findViewById(R.id.address_textview);
         addressText.setText(prefs.getString("moduleAddress", "no id"));
+
+        startServiceMethod();
 
     }
 
@@ -93,6 +92,22 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(uiUpdated);
+    }
+
+    private BroadcastReceiver uiUpdated = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            countDownText.setText(intent.getExtras().getString("remaining time"));
+
+        }
+    };
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -115,7 +130,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         placeMarker();
 
     }
-
 
     /* Given a context and an address, this method returns a LatLng object corresponding
      * to that address.
@@ -174,7 +188,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     }
 
 
-    private void updateGUI() {
+    private void startServiceMethod() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ReservedMapsActivity.this);
         int countdownDone = prefs.getInt("countdownDone", 0);
@@ -182,12 +196,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         if (!isMyServiceRunning(BroadcastService.class) && (countdownDone == 0)) {
             startService(intent);
         }
-        if (intent.getExtras() != null) {
-            long millisUntilFinished = intent.getLongExtra("countdown", 0);
-            countDownText.setText(Long.toString(millisUntilFinished));
-        } else Log.v("intent", "it's null");
-    }
 
+    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

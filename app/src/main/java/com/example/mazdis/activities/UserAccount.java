@@ -53,7 +53,7 @@ public class UserAccount extends Menu{
         phoneNumberField = (EditText) findViewById(R.id.phoneNumber_edittext);
 
         mAuth = FirebaseAuth.getInstance();
-        mRef = new Firebase("https://sabps-cd1b7.firebaseio.com/Users");
+        mRef = new Firebase("https://sabps-cd1b7.firebaseio.com");
         mDatabase = FirebaseDatabase.getInstance().getReference().child(FIREBASE_USERS);
 
         DbToEditTexts();
@@ -157,7 +157,7 @@ public class UserAccount extends Menu{
         enableEditTexts(false);
 
         String user_id = mAuth.getCurrentUser().getUid();
-        Firebase current_mRef = mRef.child(user_id);
+        Firebase current_mRef = mRef.child(FIREBASE_USERS).child(user_id);
 
         current_mRef.addValueEventListener(new ValueEventListener() {
             @Override
