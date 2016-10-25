@@ -61,6 +61,9 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.mazdis.activities.MyBookings"></activity>
+
+        <service android:name="com.example.mazdis.activities.BroadcastService" />
+
     </application>
 
 </manifest>

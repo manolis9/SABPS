@@ -1,19 +1,27 @@
 package com.example.mazdis.activities;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,19 +32,28 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
+    private static final String FIREBASE_USERS = "Users";
+    private static final String FIREBASE_USER_BOOKINGS = "bookings";
+    private static final String TAG = "ReservedMapActivity";
     private GoogleMap mMap;
     private ProgressDialog mProgress;
+    TextView countDownText;
+    TextView addressText;
+    TextView metersAwayText;
+    Button btn;
+    DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private Handler timeHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +61,18 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         setContentView(R.layout.activity_reserved_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.reservedMap);
         mapFragment.getMapAsync(this);
+
         mProgress = new ProgressDialog(this);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        btn = (Button) findViewById(R.id.done_button);
+        metersAwayText = (TextView) findViewById(R.id.meters_away_textview);
+        countDownText = (TextView) findViewById(R.id.countDown_textView);
+
+        timeHandler = new Handler();
 
         /* The menu should have a "Current Booking" button instead of a "Find Parking"
         * button so set the altMenuFlag to 1
@@ -55,6 +81,11 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 1);
         editor.commit();
+
+
+        updateGUI();
+        addressText = (TextView) findViewById(R.id.address_textview);
+        addressText.setText(prefs.getString("moduleAddress", "no id"));
 
     }
 
@@ -84,6 +115,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         placeMarker();
 
     }
+
 
     /* Given a context and an address, this method returns a LatLng object corresponding
      * to that address.
@@ -117,7 +149,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     /* Receives from Firebase the SABPS module's address and title and
     * sets a marker at that address with that title.
     */
-    public void placeMarker(){
+    public void placeMarker() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String reservedAddress = prefs.getString("moduleAddress", "no id");
@@ -126,8 +158,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         mProgress.setMessage("Loading Map...");
         mProgress.show();
 
-        while(reservedAddress == null){
-           reservedAddress = prefs.getString("moduleAddress", "no id");
+        while (reservedAddress == null) {
+            reservedAddress = prefs.getString("moduleAddress", "no id");
         }
 
         mProgress.dismiss();
@@ -137,8 +169,35 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     }
 
     /* When the user taps "Done", confirmDone activity starts*/
-    public void confirmDone(View view){
+    public void confirmDone(View view) {
         startActivity(new Intent(this, ConfirmDone.class));
     }
+
+
+    private void updateGUI() {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ReservedMapsActivity.this);
+        int countdownDone = prefs.getInt("countdownDone", 0);
+        Intent intent = new Intent(this, BroadcastService.class);
+        if (!isMyServiceRunning(BroadcastService.class) && (countdownDone == 0)) {
+            startService(intent);
+        }
+        if (intent.getExtras() != null) {
+            long millisUntilFinished = intent.getLongExtra("countdown", 0);
+            countDownText.setText(Long.toString(millisUntilFinished));
+        } else Log.v("intent", "it's null");
+    }
+
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

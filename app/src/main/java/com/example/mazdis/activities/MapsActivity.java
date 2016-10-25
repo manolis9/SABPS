@@ -37,6 +37,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         mProgress = new ProgressDialog(this);
 
         /* The menu should have a "Find Parking" button instead of a "Current Booking"

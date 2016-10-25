@@ -39,6 +39,7 @@ public class ConfirmDone extends BaseActivity {
     private static final String FIREBASE_EMAIL_TO = "to";
     private static final String FIREBASE_EMAIL_SUBJECT = "subject";
     private static final String FIREBASE_EMAIL_BODY = "body";
+    private static final double TIME_DIFFERENCE = 0.0;
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -70,6 +71,7 @@ public class ConfirmDone extends BaseActivity {
     /* Completes booking and starts MapsActivity */
     public void startMap(View view) {
         completeBooking();
+
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }
@@ -113,6 +115,7 @@ public class ConfirmDone extends BaseActivity {
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("altMenuFlag", 0);
+        editor.putInt("countdownDone", 1);
         editor.commit();
     }
 
@@ -143,7 +146,14 @@ public class ConfirmDone extends BaseActivity {
         } else r = rate;
         double doubleRate = Double.parseDouble(r);
 
-        double cost = hours * doubleRate;
+        Log.v("rate", Double.toString(doubleRate));
+        double cost;
+        if(hours >= TIME_DIFFERENCE) {
+            cost = hours * doubleRate;
+        } else {
+            cost = 0.0;
+        }
+
         double roundOff = Math.round(cost * 1000.0) / 1000.0;
 
         String costDollars = "$".concat(Double.toString((roundOff)));

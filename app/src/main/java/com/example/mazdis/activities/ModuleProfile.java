@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -87,7 +88,13 @@ public class ModuleProfile extends BaseActivity {
     * are added to the database and ReservedMapsActivity starts*/
     public void startReservedMap(View view) {
 
+
         createBooking();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("countdownDone", 0);
+        editor.commit();
+
         Intent intent = new Intent(this, ReservedMapsActivity.class);
         startActivity(intent);
         finish();

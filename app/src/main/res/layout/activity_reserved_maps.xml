@@ -3,31 +3,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mazdis.activities.MapsActivity"
-    >
+    tools:context="com.example.mazdis.activities.ReservedMapsActivity">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
+            android:id="@+id/reservedMap"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="420dp"
             tools:context="com.example.mazdis.activities.ReservedMapsActivity" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:text="Text"
+            android:id="@+id/countDown_textView"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#44E0F2F1"
+            android:layout_below="@id/reservedMap"
+            android:id="@+id/frameLayout">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/address_textview"
+                    android:text="Address"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Meters Away"
+                    android:id="@+id/meters_away_textview"
+                    android:textSize="20sp"
+                    android:layout_below="@+id/address_textview"/>
+
+            </RelativeLayout>
+
+        </FrameLayout>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="confirmDone"
             android:text="Done"
-            android:onClick="confirmDone"/>
+            android:id="@+id/done_button"
+            android:layout_marginLeft="91dp"
+            android:layout_marginStart="91dp"
+            android:layout_marginTop="23dp"
+            android:layout_below="@+id/frameLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Park Bike"
+            android:id="@+id/button"
+            android:layout_marginLeft="21dp"
+            android:layout_marginStart="21dp"
+            android:layout_alignTop="@+id/done_button"
+            android:layout_toRightOf="@+id/done_button"
+            android:layout_toEndOf="@+id/done_button" />
 
     </RelativeLayout>
 
-    <include
-        layout="@layout/activity_menu" />
+    <include layout="@layout/activity_menu" />
 
 </android.support.v4.widget.DrawerLayout>

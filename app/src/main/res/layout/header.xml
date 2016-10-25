@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SABPS"
+        android:text="MAZDIS Inc."
         android:textStyle="bold"
         android:textSize="24sp"
         android:paddingTop="50dp"
