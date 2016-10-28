@@ -107,7 +107,12 @@ public class ModuleProfile extends BaseActivity {
         startLocationService();
         registerReceiver(locationUpdated, new IntentFilter("LOCATION_UPDATED"));
 
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(locationUpdated);
     }
 
     private BroadcastReceiver locationUpdated = new BroadcastReceiver() {

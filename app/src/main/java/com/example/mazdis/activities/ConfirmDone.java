@@ -27,8 +27,10 @@ import java.util.Map;
 public class ConfirmDone extends BaseActivity {
 
     private static final String EMAIL_FROM = "manolis.ioannides@mazdis.com";
-    private static final String EMAIL_SUBJECT = "Booking Completed";
-    private static final String EMAIL_BODY = "You completed your booking at the following address:\n";
+    private static final String EMAIL_COMPLETION_SUBJECT = "Booking Completed";
+    private static final String EMAIL_COMPLETION_BODY = "You completed your booking at the following address:\n";
+    private static final String EMAIL_CANCELLATION_SUBJECT = "Booking Cancelled";
+    private static final String EMAIL_CANCELLATION_BODY = "You cancelled your booking at the following address:\n";
     private static final String FIREBASE_USER_NAME = "name";
     private static final String FIREBASE_USER_EMAIL = "email";
     private static final String FIREBASE_USERS = "Users";
@@ -99,6 +101,7 @@ public class ConfirmDone extends BaseActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         int bikeParked = prefs.getInt("countdownDone", 0);
+        final String address = prefs.getString("moduleAddress", "no id");
 
         if (bikeParked == 1) {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -108,7 +111,6 @@ public class ConfirmDone extends BaseActivity {
             String bookingTitle = prefs.getString("bookingTitle", "no id");
             String startTime = prefs.getString("bookingStartTime", "no id");
             String rate = prefs.getString("moduleRate", "no id");
-            final String address = prefs.getString("moduleAddress", "no id");
 
             String cost = calculateCost(startTime, endTime, rate);
             Log.v("cost", cost);
@@ -135,6 +137,8 @@ public class ConfirmDone extends BaseActivity {
 
             Firebase bookings_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
             bookings_mRef.removeValue();
+
+            createEmail(address);
 
             current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
 
@@ -194,6 +198,8 @@ public class ConfirmDone extends BaseActivity {
     public void createEmail(final String address) {
 
         final DatabaseReference emails = mDatabase.child(FIREBASE_EMAILS_TO_SEND).child(FIREBASE_EMAIL);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ConfirmDone.this);
+        final int bikeParked = prefs.getInt("countdownDone", 0);
 
         String user_id = mAuth.getCurrentUser().getUid();
         final DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
@@ -208,10 +214,18 @@ public class ConfirmDone extends BaseActivity {
                 Map<String, String> emailFields = new HashMap<>();
                 emailFields.put(FIREBASE_EMAIL_TO, userEmail);
                 emailFields.put(FIREBASE_EMAIL_FROM, EMAIL_FROM);
-                emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_SUBJECT);
-                emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", " + EMAIL_BODY
-                        + address);
 
+                if(bikeParked == 1) { //if parkBike is pressed, send completion email, else send cancellation email
+
+                    emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_COMPLETION_SUBJECT);
+                    emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", " + EMAIL_COMPLETION_BODY
+                            + address);
+                } else {
+
+                    emailFields.put(FIREBASE_EMAIL_SUBJECT, EMAIL_CANCELLATION_SUBJECT);
+                    emailFields.put(FIREBASE_EMAIL_BODY, "Dear " + name + ", " + EMAIL_CANCELLATION_BODY
+                            + address);
+                }
                 emails.setValue(emailFields);
             }
 

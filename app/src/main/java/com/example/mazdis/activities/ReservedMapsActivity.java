@@ -147,7 +147,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             Location currentLocation = new Location("currentLocation");
 
             crtLocation = intent.getParcelableExtra(("location update"));
-            
+
             Log.v("received lat", Double.toString(crtLocation.latitude));
 
             currentLocation.setLatitude(crtLocation.latitude);
