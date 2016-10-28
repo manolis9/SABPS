@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +52,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +67,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     private ProgressDialog mProgress;
     TextView countDownText;
     TextView addressText;
-    TextView metersAwayText;
+    TextView distanceText;
     Button doneButton;
     Button parkBikeButton;
     DatabaseReference mDatabase;
@@ -92,7 +94,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
         doneButton = (Button) findViewById(R.id.done_button);
         parkBikeButton = (Button) findViewById(R.id.park_button);
-        metersAwayText = (TextView) findViewById(R.id.meters_away_textview);
+        distanceText = (TextView) findViewById(R.id.distance_textview_ReservedMaps);
         countDownText = (TextView) findViewById(R.id.countDown_textView);
 
         /* The menu should have a "Current Booking" button instead of a "Find Parking"
@@ -145,7 +147,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             Location currentLocation = new Location("currentLocation");
 
             crtLocation = intent.getParcelableExtra(("location update"));
-
+            
             Log.v("received lat", Double.toString(crtLocation.latitude));
 
             currentLocation.setLatitude(crtLocation.latitude);
@@ -154,7 +156,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
             if (markerLocation != null) {
                // float distance = currentLocation.distanceTo(markerLocation) / 1000;
-                metersAwayText.setText(getDistance(currentLocation,markerLocation) + " away");
+                distanceText.setText(getBicyclingDistance(currentLocation,markerLocation) + " away");
             }
 
         }
@@ -279,7 +281,9 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private void startLocationService() {
         Intent intent = new Intent(this, LocationService.class);
-        startService(intent);
+        if(!isMyServiceRunning(LocationService.class)) {
+            startService(intent);
+        }
     }
 
 
@@ -293,7 +297,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         return false;
     }
 
-    public String getDistance(final Location start, final Location end) {
+    public String getBicyclingDistance(final Location start, final Location end) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -305,10 +309,26 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
                     InputStream in = new BufferedInputStream(conn.getInputStream());
                     String response;
                     response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray array = jsonObject.getJSONArray("routes");
                     JSONObject routes = array.getJSONObject(0);
+
+                    JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
+                    final String encodedString = overviewPolylines.getString("points");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<LatLng> list = decodePoly(encodedString);
+                            PolylineOptions options = new PolylineOptions().width(15).color(Color.BLUE).geodesic(true);
+                            for (int z = 0; z < list.size(); z++) {
+                                LatLng point = list.get(z);
+                                options.add(point);
+                            }
+                            mMap.addPolyline(options);
+                        }
+                    });
+
                     JSONArray legs = routes.getJSONArray("legs");
                     JSONObject steps = legs.getJSONObject(0);
                     JSONObject distance = steps.getJSONObject("distance");
@@ -332,6 +352,40 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             e.printStackTrace();
         }
         return parsedDistance;
+    }
+
+    private List<LatLng> decodePoly(String encoded) {
+
+        List<LatLng> poly = new ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng( (((double) lat / 1E5)),
+                    (((double) lng / 1E5) ));
+            poly.add(p);
+        }
+
+        return poly;
     }
 
 }

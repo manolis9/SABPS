@@ -28,12 +28,12 @@ public class LocationService extends Service {
         super.onCreate();
 
         locationHandler = new Handler();
-        Toast.makeText(LocationService.this, "LocationService Created", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LocationService.this, "LocationService Created", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(LocationService.this, "LocationService Started", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LocationService.this, "LocationService Started", Toast.LENGTH_SHORT).show();
         locationHandler.postDelayed(updateLocation, 1000);
 
         return super.onStartCommand(intent, flags, startId);
@@ -42,7 +42,7 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(LocationService.this, "LocationService Destroyed", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LocationService.this, "LocationService Destroyed", Toast.LENGTH_SHORT).show();
     }
 
     @Override

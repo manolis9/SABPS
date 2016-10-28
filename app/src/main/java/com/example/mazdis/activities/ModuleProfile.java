@@ -1,7 +1,14 @@
 package com.example.mazdis.activities;
 
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -11,14 +18,27 @@ import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModuleProfile extends BaseActivity {
@@ -46,6 +66,8 @@ public class ModuleProfile extends BaseActivity {
     private TextView titleTextView;
     private TextView addressTextView;
     private TextView rateTextView;
+    private TextView distanceTextView;
+    private String parsedDistance;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -71,6 +93,7 @@ public class ModuleProfile extends BaseActivity {
         titleTextView = (TextView) findViewById(R.id.title_textview);
         addressTextView = (TextView) findViewById(R.id.address_textview);
         rateTextView = (TextView) findViewById(R.id.rate_textview);
+        distanceTextView = (TextView) findViewById(R.id.distance_textview_ModuleProfile);
 
         /* Set the textviews to contain the info received from MapsActivity */
         titleTextView.setText(getIntent().getStringExtra("title"));
@@ -81,13 +104,44 @@ public class ModuleProfile extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        startLocationService();
+        registerReceiver(locationUpdated, new IntentFilter("LOCATION_UPDATED"));
+
 
     }
+
+    private BroadcastReceiver locationUpdated = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            LatLng crtLocation;
+            Location currentLocation = new Location("currentLocation");
+
+            crtLocation = intent.getParcelableExtra(("location update"));
+
+            Log.v("received lat", Double.toString(crtLocation.latitude));
+
+            currentLocation.setLatitude(crtLocation.latitude);
+            currentLocation.setLongitude(crtLocation.longitude);
+
+            Location markerLocation = new Location("markerLocation");
+
+            LatLng mkrLoc = getLocationFromAddress(ModuleProfile.this, addressTextView.getText().toString());
+
+            markerLocation.setLatitude(mkrLoc.latitude);
+            markerLocation.setLongitude(mkrLoc.longitude);
+
+            if (markerLocation != null) {
+                // float distance = currentLocation.distanceTo(markerLocation) / 1000;
+                distanceTextView.setText(getBicyclingDistance(currentLocation,markerLocation) + " away");
+            }
+
+        }
+    };
 
     /* Once the user taps on "Reserve", a booking and a booking title
     * are added to the database and ReservedMapsActivity starts*/
     public void startReservedMap(View view) {
-
 
         createBooking();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -181,4 +235,88 @@ public class ModuleProfile extends BaseActivity {
         });
 
     }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng latlng = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            android.location.Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            latlng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return latlng;
+    }
+
+    public String getBicyclingDistance(final Location start, final Location end) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("http://maps.googleapis.com/maps/api/directions/json?origin=" + start.getLatitude() + "," + start.getLongitude() + "&destination=" + end.getLatitude() + "," + end.getLongitude() + "&sensor=false&units=metric&mode=bicycling");
+                    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    InputStream in = new BufferedInputStream(conn.getInputStream());
+                    String response;
+                    response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray array = jsonObject.getJSONArray("routes");
+                    JSONObject routes = array.getJSONObject(0);
+                    JSONArray legs = routes.getJSONArray("legs");
+                    JSONObject steps = legs.getJSONObject(0);
+                    JSONObject distance = steps.getJSONObject("distance");
+                    parsedDistance = distance.getString("text");
+
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return parsedDistance;
+    }
+
+    private void startLocationService() {
+        Intent intent = new Intent(this, LocationService.class);
+        if(!isMyServiceRunning(LocationService.class)) {
+            startService(intent);
+        }
+    }
+
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

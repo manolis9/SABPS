@@ -68,13 +68,13 @@ public class BroadcastService extends Service {
 
         startForeground(1337, notification);
 
-        Toast.makeText(BroadcastService.this, "BroadcastService Created", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(BroadcastService.this, "BroadcastService Created", Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(BroadcastService.this, "BroadcastService Started", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(BroadcastService.this, "BroadcastService Started", Toast.LENGTH_SHORT).show();
 
         countdownHandler.postDelayed(countdown, ONE_MINUTE);
         return super.onStartCommand(intent, flags, startId);
@@ -83,7 +83,7 @@ public class BroadcastService extends Service {
     @Override
     public void onDestroy() {
 
-        Toast.makeText(BroadcastService.this, "BroadcastService Stopped", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(BroadcastService.this, "BroadcastService Stopped", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 

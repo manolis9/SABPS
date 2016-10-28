@@ -6,46 +6,51 @@
     tools:context="com.example.mazdis.activities.ModuleProfile">
 
     <include
-        layout="@layout/header"
-        android:id="@+id/header"/>
+        android:id="@+id/header"
+        layout="@layout/header" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header"
-        android:gravity="center_horizontal"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title not specified"
-        android:id="@+id/title_textview"
-        android:paddingTop="12dp"
-        android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="12dp"
+            android:text="Title not specified"
+            android:textSize="20sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Address not specified"
-        android:id="@+id/address_textview"/>
+        <TextView
+            android:id="@+id/address_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address not specified" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Rate not specified"
-        android:id="@+id/rate_textview"
-        android:layout_marginBottom="25dp"/>
+        <TextView
+            android:id="@+id/rate_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rate not specified" />
 
-     <Button
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:text="Reserve"
-         android:id="@+id/reserve_button"
-         android:onClick="startReservedMap"
-         />
+        <TextView
+            android:id="@+id/distance_textview_ModuleProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/reserve_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="startReservedMap"
+            android:text="Reserve" />
 
     </LinearLayout>
 

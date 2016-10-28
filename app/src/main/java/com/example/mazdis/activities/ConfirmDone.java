@@ -1,5 +1,7 @@
 package com.example.mazdis.activities;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -74,7 +76,7 @@ public class ConfirmDone extends BaseActivity {
     /* Completes booking and starts MapsActivity */
     public void startMap(View view) {
         completeBooking();
-
+        stopLocationService();
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }
@@ -175,7 +177,7 @@ public class ConfirmDone extends BaseActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ConfirmDone.this);
         int bikeParked = prefs.getInt("countdownDone", 0);
 
-        if(bikeParked == 1 ) { //if parkBike is pressed
+        if (bikeParked == 1) { //if parkBike is pressed
             cost = hours * doubleRate;
         } else {
             cost = 0.0;
@@ -219,6 +221,24 @@ public class ConfirmDone extends BaseActivity {
             }
         });
 
+    }
+
+    private void stopLocationService() {
+        Intent intent = new Intent(this, LocationService.class);
+        if (isMyServiceRunning(LocationService.class)) {
+            stopService(intent);
+        }
+    }
+
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
