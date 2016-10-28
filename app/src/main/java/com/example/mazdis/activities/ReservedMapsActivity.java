@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 
@@ -33,10 +34,22 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -47,6 +60,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     private static final String FIREBASE_USERS = "Users";
     private static final String FIREBASE_USER_BOOKINGS = "bookings";
     private static final String TAG = "ReservedMapActivity";
+    public String parsedDistance;
     private GoogleMap mMap;
     private ProgressDialog mProgress;
     TextView countDownText;
@@ -137,21 +151,12 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             currentLocation.setLatitude(crtLocation.latitude);
             currentLocation.setLongitude(crtLocation.longitude);
 
+
             if (markerLocation != null) {
-                float distance = currentLocation.distanceTo(markerLocation)/1000;
-                metersAwayText.setText(Float.toString(distance) + " km away");
+               // float distance = currentLocation.distanceTo(markerLocation) / 1000;
+                metersAwayText.setText(getDistance(currentLocation,markerLocation) + " away");
             }
 
-//            if (intent.getExtras().getParcelable("current location") != null) {
-//                crtLocation = getIntent().getExtras().getParcelable("current location");
-//                currentLocation.setLongitude(crtLocation.longitude);
-//                currentLocation.setLatitude(crtLocation.latitude);
-//
-//                if (markerLocation != null) {
-//                    float distance = currentLocation.distanceTo(markerLocation);
-//                    metersAwayText.setText(Float.toString(distance));
-//                }
-//            }
         }
     };
 
@@ -288,5 +293,45 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         return false;
     }
 
+    public String getDistance(final Location start, final Location end) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("http://maps.googleapis.com/maps/api/directions/json?origin=" + start.getLatitude() + "," + start.getLongitude() + "&destination=" + end.getLatitude() + "," + end.getLongitude() + "&sensor=false&units=metric&mode=bicycling");
+                    final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    InputStream in = new BufferedInputStream(conn.getInputStream());
+                    String response;
+                    response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray array = jsonObject.getJSONArray("routes");
+                    JSONObject routes = array.getJSONObject(0);
+                    JSONArray legs = routes.getJSONArray("legs");
+                    JSONObject steps = legs.getJSONObject(0);
+                    JSONObject distance = steps.getJSONObject("distance");
+                    parsedDistance = distance.getString("text");
+
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return parsedDistance;
+    }
 
 }
