@@ -35,7 +35,7 @@ public class BroadcastService extends Service {
     private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
     private final static String TAG = "BroadcastService";
     private final int ONE_MINUTE = 1000;
-    private final int THIRTY_MINUTES = 1000 * 30;
+    private final int THIRTY_MINUTES = 1000 * 60 * 30;
     private long remainingTimeMillis = THIRTY_MINUTES;
 
     public static final String COUNTDOWN_BR = "com.example.mazdis.activities.countdown_br";
@@ -63,28 +63,27 @@ public class BroadcastService extends Service {
         Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.mazdis_logo)
                 .setContentTitle("Mazdis")
-                .setContentText(TimeUnit.MILLISECONDS.toMinutes(remainingTimeMillis) + " until booking")
+                .setContentText(TimeUnit.MILLISECONDS.toMinutes(remainingTimeMillis) + " minutes until booking")
                 .setContentIntent(pendingIntent).build();
 
         startForeground(1337, notification);
 
-        Toast.makeText(BroadcastService.this, "Service Created", Toast.LENGTH_SHORT).show();
+        Toast.makeText(BroadcastService.this, "BroadcastService Created", Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(BroadcastService.this, "Service Started", Toast.LENGTH_SHORT).show();
+        Toast.makeText(BroadcastService.this, "BroadcastService Started", Toast.LENGTH_SHORT).show();
 
         countdownHandler.postDelayed(countdown, ONE_MINUTE);
         return super.onStartCommand(intent, flags, startId);
     }
 
-
     @Override
     public void onDestroy() {
 
-        Toast.makeText(BroadcastService.this, "Service Stopped", Toast.LENGTH_SHORT).show();
+        Toast.makeText(BroadcastService.this, "BroadcastService Stopped", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 
@@ -92,7 +91,6 @@ public class BroadcastService extends Service {
     public IBinder onBind(Intent arg0) {
         return null;
     }
-
 
     private Runnable countdown = new Runnable() {
         public void run() {
@@ -102,22 +100,19 @@ public class BroadcastService extends Service {
             Intent i = new Intent("TIME_UPDATED");
             String user_id = mAuth.getCurrentUser().getUid();
             String bookingTitle = prefs.getString("bookingTitle", "no id");
+            countdownHandler.postDelayed(countdown, ONE_MINUTE);
 
             if ((remainingTimeMillis > 0) && (countdownDone == 0)) {
-
-                countdownHandler.postDelayed(countdown, ONE_MINUTE);
                 remainingTimeMillis = remainingTimeMillis - ONE_MINUTE;
                 Log.v("remaining time", Long.toString(remainingTimeMillis));
 
-                i.putExtra("remaining time", "Time Remaining: " + String.format("%d min, %d sec",
-                        TimeUnit.MILLISECONDS.toMinutes(remainingTimeMillis),
-                        TimeUnit.MILLISECONDS.toSeconds(remainingTimeMillis)
-                ));
+                i.putExtra("remaining time", "Time Remaining: " + Long.toString(TimeUnit.MILLISECONDS.toMinutes(remainingTimeMillis)) + " minutes");
                 sendBroadcast(i);
 
             } else if ((remainingTimeMillis == 0) && (countdownDone == 0)) {
 
                 i.putExtra("remaining time", "Booking cancelled");
+                sendBroadcast(i);
                 DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
                 current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
 
@@ -134,19 +129,11 @@ public class BroadcastService extends Service {
 
                 stopSelf();
 
-            } else {
-
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                Calendar c = Calendar.getInstance();
-                String startTime = timeFormat.format(c.getTime());
-                DatabaseReference current_user_bookings = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
-                current_user_bookings.child("start time").setValue(startTime);
-
-                editor.putInt("countdownDone", 1);
-                editor.commit();
+            } else { //if countdownDone = 1 (meaning, if parkBike or done has been pressed)
 
                 i.putExtra("remaining time", "");
-
+                i.putExtra("button", "Done");
+                sendBroadcast(i);
                 remainingTimeMillis = THIRTY_MINUTES;
 
                 stopSelf();

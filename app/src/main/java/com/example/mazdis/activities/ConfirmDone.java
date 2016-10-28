@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.mazdis.sabps.R;
+import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,16 +34,17 @@ public class ConfirmDone extends BaseActivity {
     private static final String FIREBASE_EMAIL = "email";
     private static final String FIREBASE_USER_BOOKING_IN_PROGRESS = "booking in progress";
     private static final String FIREBASE_USER_BOOKINGS = "bookings";
+    private static final String FIREBASE_USER_BOOKING_TITLES = "Booking Titles";
     private static final String FIREBASE_BOOKING_END_TIME = "end time";
     private static final String FIREBASE_BOOKING_COST = "cost";
     private static final String FIREBASE_EMAIL_FROM = "from";
     private static final String FIREBASE_EMAIL_TO = "to";
     private static final String FIREBASE_EMAIL_SUBJECT = "subject";
     private static final String FIREBASE_EMAIL_BODY = "body";
-    private static final double TIME_DIFFERENCE = 0.0;
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private Firebase mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class ConfirmDone extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mRef = new Firebase("https://sabps-cd1b7.firebaseio.com");
 
     }
 
@@ -88,35 +91,55 @@ public class ConfirmDone extends BaseActivity {
     */
     public void completeBooking() {
 
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        Calendar c = Calendar.getInstance();
-        String endTime = timeFormat.format(c.getTime());
-
         String user_id = mAuth.getCurrentUser().getUid();
+        DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String bookingTitle = prefs.getString("bookingTitle", "no id");
-        String startTime = prefs.getString("bookingStartTime", "no id");
-        String rate = prefs.getString("moduleRate", "no id");
-        final String address = prefs.getString("moduleAddress", "no id");
-
-        String cost = calculateCost(startTime, endTime, rate);
-        Log.v("cost", cost);
-
-        DatabaseReference booking_titles_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
-
-        booking_titles_db.child(FIREBASE_BOOKING_END_TIME).setValue(endTime);
-        booking_titles_db.child(FIREBASE_BOOKING_COST).setValue(cost);
-
-        createEmail(address);
-
-        DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(user_id);
-        current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
-
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("altMenuFlag", 0);
-        editor.putInt("countdownDone", 1);
-        editor.commit();
+        int bikeParked = prefs.getInt("countdownDone", 0);
+
+        if (bikeParked == 1) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            Calendar c = Calendar.getInstance();
+            String endTime = timeFormat.format(c.getTime());
+
+            String bookingTitle = prefs.getString("bookingTitle", "no id");
+            String startTime = prefs.getString("bookingStartTime", "no id");
+            String rate = prefs.getString("moduleRate", "no id");
+            final String address = prefs.getString("moduleAddress", "no id");
+
+            String cost = calculateCost(startTime, endTime, rate);
+            Log.v("cost", cost);
+
+            DatabaseReference booking_titles_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
+
+            booking_titles_db.child(FIREBASE_BOOKING_END_TIME).setValue(endTime);
+            booking_titles_db.child(FIREBASE_BOOKING_COST).setValue(cost);
+
+            createEmail(address);
+
+            current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
+
+            editor.putInt("altMenuFlag", 0);
+
+            editor.commit();
+
+        } else {
+
+            String bookingTitle = prefs.getString("bookingTitle", "no id");
+
+            Firebase bookingTitles_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKING_TITLES).child(bookingTitle);
+            bookingTitles_mRef.removeValue();
+
+            Firebase bookings_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
+            bookings_mRef.removeValue();
+
+            current_user_db.child(FIREBASE_USER_BOOKING_IN_PROGRESS).setValue("false");
+
+            editor.putInt("altMenuFlag", 0);
+            editor.putInt("countdownDone", 1);
+            editor.commit();
+        }
     }
 
     /* Given the booking start time, end time and and rate, this method calculates the cost for a booking.
@@ -148,7 +171,11 @@ public class ConfirmDone extends BaseActivity {
 
         Log.v("rate", Double.toString(doubleRate));
         double cost;
-        if(hours >= TIME_DIFFERENCE) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ConfirmDone.this);
+        int bikeParked = prefs.getInt("countdownDone", 0);
+
+        if(bikeParked == 1 ) { //if parkBike is pressed
             cost = hours * doubleRate;
         } else {
             cost = 0.0;

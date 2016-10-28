@@ -44,7 +44,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Meters Away"
                     android:id="@+id/meters_away_textview"
                     android:textSize="20sp"
                     android:layout_below="@+id/address_textview"/>
@@ -57,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="confirmDone"
-            android:text="Done"
+            android:text="Cancel"
             android:id="@+id/done_button"
             android:layout_marginLeft="91dp"
             android:layout_marginStart="91dp"
@@ -70,7 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Park Bike"
-            android:id="@+id/button"
+            android:id="@+id/park_button"
+            android:onClick="parkBike"
             android:layout_marginLeft="21dp"
             android:layout_marginStart="21dp"
             android:layout_alignTop="@+id/done_button"

@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 
+import android.location.Location;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -50,9 +52,11 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     TextView countDownText;
     TextView addressText;
     TextView metersAwayText;
-    Button btn;
+    Button doneButton;
+    Button parkBikeButton;
     DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private Location markerLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +67,17 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
                 .findFragmentById(R.id.reservedMap);
         mapFragment.getMapAsync(this);
 
+        markerLocation = new Location("markerLocation");
+
         mProgress = new ProgressDialog(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        registerReceiver(uiUpdated, new IntentFilter("TIME_UPDATED"));
+        registerReceiver(timeUpdated, new IntentFilter("TIME_UPDATED"));
+        registerReceiver(locationUpdated, new IntentFilter("LOCATION_UPDATED"));
 
-        btn = (Button) findViewById(R.id.done_button);
+        doneButton = (Button) findViewById(R.id.done_button);
+        parkBikeButton = (Button) findViewById(R.id.park_button);
         metersAwayText = (TextView) findViewById(R.id.meters_away_textview);
         countDownText = (TextView) findViewById(R.id.countDown_textView);
 
@@ -84,7 +92,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         addressText = (TextView) findViewById(R.id.address_textview);
         addressText.setText(prefs.getString("moduleAddress", "no id"));
 
-        startServiceMethod();
+        startLocationService();
+        startBroadcastService();
 
     }
 
@@ -96,18 +105,56 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(uiUpdated);
+        unregisterReceiver(timeUpdated);
+        unregisterReceiver(locationUpdated);
     }
 
-    private BroadcastReceiver uiUpdated = new BroadcastReceiver() {
+    private BroadcastReceiver timeUpdated = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
             countDownText.setText(intent.getExtras().getString("remaining time"));
 
+            if (intent.getExtras().getString("button") != null) {
+                doneButton.setText(intent.getExtras().getString("button"));
+            }
+
         }
     };
+
+    private BroadcastReceiver locationUpdated = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            LatLng crtLocation;
+            Location currentLocation = new Location("currentLocation");
+
+            crtLocation = intent.getParcelableExtra(("location update"));
+
+            Log.v("received lat", Double.toString(crtLocation.latitude));
+
+            currentLocation.setLatitude(crtLocation.latitude);
+            currentLocation.setLongitude(crtLocation.longitude);
+
+            if (markerLocation != null) {
+                float distance = currentLocation.distanceTo(markerLocation)/1000;
+                metersAwayText.setText(Float.toString(distance) + " km away");
+            }
+
+//            if (intent.getExtras().getParcelable("current location") != null) {
+//                crtLocation = getIntent().getExtras().getParcelable("current location");
+//                currentLocation.setLongitude(crtLocation.longitude);
+//                currentLocation.setLatitude(crtLocation.latitude);
+//
+//                if (markerLocation != null) {
+//                    float distance = currentLocation.distanceTo(markerLocation);
+//                    metersAwayText.setText(Float.toString(distance));
+//                }
+//            }
+        }
+    };
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -177,9 +224,16 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         }
 
         mProgress.dismiss();
-        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
+        MarkerOptions markerOptions = new MarkerOptions();
+        mMap.addMarker(markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
                 .position(getLocationFromAddress(this, reservedAddress)).title(reservedTitle));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, reservedAddress)));
+
+        LatLng mrkLoc;
+        mrkLoc = markerOptions.getPosition();
+
+        markerLocation.setLatitude(mrkLoc.latitude);
+        markerLocation.setLongitude(mrkLoc.longitude);
     }
 
     /* When the user taps "Done", confirmDone activity starts*/
@@ -187,8 +241,28 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         startActivity(new Intent(this, ConfirmDone.class));
     }
 
+    public void parkBike(View v) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ReservedMapsActivity.this);
+        SharedPreferences.Editor editor = prefs.edit();
+        String user_id = mAuth.getCurrentUser().getUid();
+        String bookingTitle = prefs.getString("bookingTitle", "no id");
+        editor.putInt("countdownDone", 1);
+        editor.commit();
 
-    private void startServiceMethod() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        Calendar c = Calendar.getInstance();
+        String startTime = timeFormat.format(c.getTime());
+        DatabaseReference current_user_bookings = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
+        current_user_bookings.child("start time").setValue(startTime);
+
+        editor.putString("bookingStartTime", startTime);
+        editor.commit();
+
+        parkBikeButton.setVisibility(View.GONE);
+    }
+
+
+    private void startBroadcastService() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ReservedMapsActivity.this);
         int countdownDone = prefs.getInt("countdownDone", 0);
@@ -196,8 +270,13 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         if (!isMyServiceRunning(BroadcastService.class) && (countdownDone == 0)) {
             startService(intent);
         }
-
     }
+
+    private void startLocationService() {
+        Intent intent = new Intent(this, LocationService.class);
+        startService(intent);
+    }
+
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

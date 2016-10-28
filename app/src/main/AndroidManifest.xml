@@ -8,6 +8,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -63,6 +64,8 @@
         <activity android:name="com.example.mazdis.activities.MyBookings"></activity>
 
         <service android:name="com.example.mazdis.activities.BroadcastService" />
+
+        <service android:name="com.example.mazdis.activities.LocationService" />
 
     </application>
 
