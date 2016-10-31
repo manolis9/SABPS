@@ -13,8 +13,6 @@ import android.location.Address;
 import android.location.Geocoder;
 
 import android.location.Location;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -23,7 +21,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,9 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -55,13 +50,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
     private static final String FIREBASE_USERS = "Users";
     private static final String FIREBASE_USER_BOOKINGS = "bookings";
-    private static final String TAG = "ReservedMapActivity";
     public String parsedDistance;
     private GoogleMap mMap;
     private ProgressDialog mProgress;
@@ -73,6 +66,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private Location markerLocation;
+    Location currentLocation = new Location("currentLocation");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +138,7 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
         public void onReceive(Context context, Intent intent) {
 
             LatLng crtLocation;
-            Location currentLocation = new Location("currentLocation");
+
 
             crtLocation = intent.getParcelableExtra(("location update"));
 
@@ -154,9 +148,9 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             currentLocation.setLongitude(crtLocation.longitude);
 
 
-            if (markerLocation != null) {
-               // float distance = currentLocation.distanceTo(markerLocation) / 1000;
-                distanceText.setText(getBicyclingDistance(currentLocation,markerLocation) + " away");
+            String distance = getBicyclingDistance(currentLocation,markerLocation);
+            if((distance != null) && (markerLocation != null)) {
+                distanceText.setText(distance + " away");
             }
 
         }

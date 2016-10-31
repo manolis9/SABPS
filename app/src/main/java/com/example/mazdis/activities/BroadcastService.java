@@ -125,14 +125,16 @@ public class BroadcastService extends Service {
                 editor.putInt("altMenuFlag", 0);
                 editor.putInt("countdownDone", 1);
                 editor.commit();
-//                startActivity(new Intent(BroadcastService.this, MapsActivity.class));
 
+                Intent dialogIntent = new Intent(BroadcastService.this, MapsActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(dialogIntent);
                 stopSelf();
 
             } else { //if countdownDone = 1 (meaning, if parkBike or done has been pressed)
 
                 i.putExtra("remaining time", "");
-                i.putExtra("button", "Done");
+                i.putExtra("button", "Retrieve Bike");
                 sendBroadcast(i);
                 remainingTimeMillis = THIRTY_MINUTES;
 

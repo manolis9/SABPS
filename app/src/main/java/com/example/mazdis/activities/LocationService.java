@@ -63,6 +63,7 @@ public class LocationService extends Service {
             }
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000, 10, locationListener);
             Log.v("this runs", "under lm.requestLocationUpdates");
         }

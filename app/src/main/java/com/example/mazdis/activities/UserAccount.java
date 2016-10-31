@@ -1,6 +1,7 @@
 package com.example.mazdis.activities;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -82,7 +83,6 @@ public class UserAccount extends Menu{
         if(item.getItemId() == R.id.action_edit){
             enableEditTexts(true);
             saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
             return true;
         }
         if(item.getItemId() == R.id.action_save){
@@ -91,6 +91,16 @@ public class UserAccount extends Menu{
             Toast.makeText(this, "Saved Changes", Toast.LENGTH_LONG).show();
             return true;
         }
+        if(item.getItemId() == R.id.action_change_password){
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null);
+            ChangePassword dialog = new ChangePassword();
+            dialog.show(transaction, null);
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

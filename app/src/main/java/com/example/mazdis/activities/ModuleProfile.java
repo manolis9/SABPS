@@ -136,10 +136,11 @@ public class ModuleProfile extends BaseActivity {
             markerLocation.setLatitude(mkrLoc.latitude);
             markerLocation.setLongitude(mkrLoc.longitude);
 
-            if (markerLocation != null) {
                 // float distance = currentLocation.distanceTo(markerLocation) / 1000;
-                distanceTextView.setText(getBicyclingDistance(currentLocation,markerLocation) + " away");
-            }
+                String distance = getBicyclingDistance(currentLocation,markerLocation);
+                if(distance != null) {
+                    distanceTextView.setText(distance + " away");
+                }
 
         }
     };

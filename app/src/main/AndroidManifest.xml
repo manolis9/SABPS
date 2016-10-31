@@ -51,7 +51,7 @@
         <activity
             android:name="com.example.mazdis.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name="com.example.mazdis.activities.RegistrationActivity" />
         <activity android:name="com.example.mazdis.activities.ContactUs" />
         <activity android:name="com.example.mazdis.activities.SplashScreen">
@@ -61,12 +61,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.mazdis.activities.MyBookings"></activity>
+        <activity android:name="com.example.mazdis.activities.MyBookings" />
 
         <service android:name="com.example.mazdis.activities.BroadcastService" />
-
         <service android:name="com.example.mazdis.activities.LocationService" />
 
+        <activity android:name="com.example.mazdis.activities.ChangePassword"></activity>
     </application>
 
 </manifest>

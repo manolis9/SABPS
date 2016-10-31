@@ -58,12 +58,9 @@
             android:onClick="confirmDone"
             android:text="Cancel"
             android:id="@+id/done_button"
-            android:layout_marginLeft="91dp"
-            android:layout_marginStart="91dp"
-            android:layout_marginTop="23dp"
-            android:layout_below="@+id/frameLayout"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_above="@+id/park_button"
+            android:layout_alignLeft="@+id/park_button"
+            android:layout_alignStart="@+id/park_button" />
 
         <Button
             android:layout_width="wrap_content"
@@ -71,11 +68,9 @@
             android:text="Park Bike"
             android:id="@+id/park_button"
             android:onClick="parkBike"
-            android:layout_marginLeft="21dp"
-            android:layout_marginStart="21dp"
-            android:layout_alignTop="@+id/done_button"
-            android:layout_toRightOf="@+id/done_button"
-            android:layout_toEndOf="@+id/done_button" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 
