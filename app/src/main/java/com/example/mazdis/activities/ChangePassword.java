@@ -46,8 +46,15 @@ public class ChangePassword extends DialogFragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
 
-        mAuth.getCurrentUser().updatePassword(newPassword.getText().toString());
-        Toast.makeText(getActivity(), "Password Updated", Toast.LENGTH_SHORT).show();
-        dismiss();
+        String newPass = newPassword.getText().toString();
+        String confirm = confirmNewPassword.getText().toString();
+
+        if (newPass.equals(confirm)) {
+            mAuth.getCurrentUser().updatePassword(newPassword.getText().toString());
+            Toast.makeText(getActivity(), "Password Updated", Toast.LENGTH_SHORT).show();
+            dismiss();
+        } else {
+            Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+        }
     }
 }

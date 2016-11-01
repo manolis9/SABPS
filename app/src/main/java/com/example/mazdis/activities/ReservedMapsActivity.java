@@ -126,10 +126,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
 
             countDownText.setText(intent.getExtras().getString("remaining time"));
 
-            if (intent.getExtras().getString("button") != null) {
-                doneButton.setText(intent.getExtras().getString("button"));
-            }
-
         }
     };
 
@@ -152,7 +148,6 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
             if((distance != null) && (markerLocation != null)) {
                 distanceText.setText(distance + " away");
             }
-
         }
     };
 
@@ -243,6 +238,8 @@ public class ReservedMapsActivity extends Menu implements OnMapReadyCallback {
     }
 
     public void parkBike(View v) {
+
+        doneButton.setText("Retrieve Bike");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ReservedMapsActivity.this);
         SharedPreferences.Editor editor = prefs.edit();
         String user_id = mAuth.getCurrentUser().getUid();

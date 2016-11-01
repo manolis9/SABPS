@@ -48,29 +48,30 @@
                     android:textSize="20sp"
                     android:layout_below="@+id/address_textview"/>
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="confirmDone"
+                    android:text="Cancel"
+                    android:id="@+id/done_button"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                     />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Park Bike"
+                    android:id="@+id/park_button"
+                    android:onClick="parkBike"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
             </RelativeLayout>
 
         </FrameLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="confirmDone"
-            android:text="Cancel"
-            android:id="@+id/done_button"
-            android:layout_above="@+id/park_button"
-            android:layout_alignLeft="@+id/park_button"
-            android:layout_alignStart="@+id/park_button" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Park Bike"
-            android:id="@+id/park_button"
-            android:onClick="parkBike"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

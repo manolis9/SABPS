@@ -25,7 +25,7 @@ import com.mazdis.sabps.infrastructure.User;
 
 import java.util.Map;
 
-public class UserAccount extends Menu{
+public class UserAccount extends Menu {
 
     private static final String FIREBASE_USER_NAME = "name";
     private static final String FIREBASE_USER_EMAIL = "email";
@@ -42,6 +42,8 @@ public class UserAccount extends Menu{
     private Firebase mRef;
     private DatabaseReference mDatabase;
     private MenuItem saveItem;
+    private MenuItem editItem;
+    private MenuItem changePassword;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -66,10 +68,17 @@ public class UserAccount extends Menu{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu){
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
 
         getMenuInflater().inflate(R.menu.account_action_bar, menu);
         saveItem = menu.findItem(R.id.action_save);
+        editItem = menu.findItem(R.id.action_edit);
+        changePassword = menu.findItem(R.id.action_change_password);
+        changePassword.setVisible(true);
+        saveItem.setVisible(false);
+        editItem.setVisible(true);
+
+
         return true;
     }
 
@@ -78,20 +87,24 @@ public class UserAccount extends Menu{
     * and disable the edittexts.
     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == R.id.action_edit){
+        if (item.getItemId() == R.id.action_edit) {
             enableEditTexts(true);
+            editItem.setVisible(false);
+            saveItem.setVisible(true);
             saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             return true;
         }
-        if(item.getItemId() == R.id.action_save){
+        if (item.getItemId() == R.id.action_save) {
             saveInfo();
+            saveItem.setVisible(false);
             saveItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            editItem.setVisible(true);
             Toast.makeText(this, "Saved Changes", Toast.LENGTH_LONG).show();
             return true;
         }
-        if(item.getItemId() == R.id.action_change_password){
+        if (item.getItemId() == R.id.action_change_password) {
             FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
                     .addToBackStack(null);
@@ -105,7 +118,7 @@ public class UserAccount extends Menu{
     }
 
     /* By tapping on LOGOUT, the user gets logged out and LoginActivity starts*/
-    public void logout(View view){
+    public void logout(View view) {
 
         mAuth.signOut();
         application.getAuth().getUser().setLoggedIn(false);
@@ -116,7 +129,7 @@ public class UserAccount extends Menu{
     /* Updates the current user's info on the database based on the info
      * in the edittexts and disables the edittexts.
       */
-    public void saveInfo(){
+    public void saveInfo() {
 
         enableEditTexts(false);
 
@@ -139,9 +152,9 @@ public class UserAccount extends Menu{
     /* If bool is set to true, the edittexts become enabled; if it is
     * set to false, the edittexts become disabled.
     */
-    public void enableEditTexts(Boolean bool){
+    public void enableEditTexts(Boolean bool) {
 
-        if(bool == true){
+        if (bool == true) {
 
             nameField.setEnabled(true);
             emailField.setEnabled(true);
@@ -162,7 +175,7 @@ public class UserAccount extends Menu{
      */
 
 
-    public void DbToEditTexts(){
+    public void DbToEditTexts() {
 
         enableEditTexts(false);
 

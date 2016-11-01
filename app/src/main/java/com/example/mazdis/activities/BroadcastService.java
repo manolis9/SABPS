@@ -134,7 +134,6 @@ public class BroadcastService extends Service {
             } else { //if countdownDone = 1 (meaning, if parkBike or done has been pressed)
 
                 i.putExtra("remaining time", "");
-                i.putExtra("button", "Retrieve Bike");
                 sendBroadcast(i);
                 remainingTimeMillis = THIRTY_MINUTES;
 
