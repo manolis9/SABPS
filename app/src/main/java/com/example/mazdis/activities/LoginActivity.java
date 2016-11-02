@@ -3,6 +3,7 @@ package com.example.mazdis.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -97,4 +98,13 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
     }
 
+    public void forgotPassword(View v){
+
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null);
+        ForgotPassword dialog = new ForgotPassword();
+        dialog.show(transaction, null);
+
+    }
 }

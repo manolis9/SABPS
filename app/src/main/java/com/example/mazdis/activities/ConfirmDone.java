@@ -1,6 +1,7 @@
 package com.example.mazdis.activities;
 
 import android.app.ActivityManager;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,6 +80,7 @@ public class ConfirmDone extends BaseActivity {
     public void startMap(View view) {
         completeBooking();
         stopLocationService();
+        stopBroadcastService();
         startActivity(new Intent(this, MapsActivity.class));
         finish();
     }
@@ -240,6 +242,13 @@ public class ConfirmDone extends BaseActivity {
     private void stopLocationService() {
         Intent intent = new Intent(this, LocationService.class);
         if (isMyServiceRunning(LocationService.class)) {
+            stopService(intent);
+        }
+    }
+
+    private void stopBroadcastService(){
+        Intent intent = new Intent(this, BroadcastService.class);
+        if(isMyServiceRunning(BroadcastService.class)){
             stopService(intent);
         }
     }

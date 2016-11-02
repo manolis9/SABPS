@@ -42,6 +42,7 @@ public class LocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        locationHandler.removeCallbacksAndMessages(null);
 //        Toast.makeText(LocationService.this, "LocationService Destroyed", Toast.LENGTH_SHORT).show();
     }
 

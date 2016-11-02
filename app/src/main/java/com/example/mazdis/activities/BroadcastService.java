@@ -83,6 +83,7 @@ public class BroadcastService extends Service {
     @Override
     public void onDestroy() {
 
+        countdownHandler.removeCallbacksAndMessages(null);
 //        Toast.makeText(BroadcastService.this, "BroadcastService Stopped", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }

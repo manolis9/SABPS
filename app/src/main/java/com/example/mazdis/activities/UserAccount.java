@@ -146,7 +146,6 @@ public class UserAccount extends Menu {
         current_user_db.child(FIREBASE_USER_ADDRESS).setValue(address);
         current_user_db.child(FIREBASE_USER_PHONE_NUMBER).setValue(phoneNumber);
 
-
     }
 
     /* If bool is set to true, the edittexts become enabled; if it is

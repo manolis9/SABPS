@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var firebase = require('firebase');
 var nodemailer = require('nodemailer');
-var PORT = process.env.PORT || 3000;
+var PORT = 3000;
 var bodyParser = require('body-parser');
 
 // firebase.initializeApp({
@@ -32,12 +32,25 @@ var smtpConfig = {
 
 var transporter = nodemailer.createTransport(smtpConfig);
 
-
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
 
+		/* Forgot password: send a reset password email*/
+		firebase.database().ref().child('Reset Password Email').on('child_changed', function(email) {
+		var userEmail = email.val();
+		
+		console.log(userEmail);
+		var auth = firebase.auth();
 
+		auth.sendPasswordResetEmail(userEmail).then(function() {
+		  // Email sent.
+		}, function(error) {
+		  // Error
+		});
+	});
+
+	/* Booking confirmation, completion, cancellation and registration confirmation emails*/
 	firebase.database().ref().child('Emails to Send').on('child_changed', function(emailSnap) {
 		var email = emailSnap.val();
 		//sendEmailHelper(email.from, email.to, email.subject, email.body);
@@ -61,15 +74,14 @@ app.get('/', function(req, res) {
 			console.log('Message sent: ' + info.response);
 		});
 
-		// firebase.database().ref().child('Emails to send').off("child_changed");
-		// Remove it now that we've processed it.
-		// firebase.database().ref().child('Emails to send').child('email').remove();
-
 	});
 
-	res.send('MAZDIS - SABPS');
+
+
+res.send('MAZDIS - SABPS');
 
 });
+
 
 app.listen(PORT, function() {
 	console.log('Express listening on port: ' + PORT + '!');
