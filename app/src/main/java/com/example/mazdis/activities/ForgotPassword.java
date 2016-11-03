@@ -37,6 +37,7 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
+                .setNegativeButton("Cancel", null)
                 .setPositiveButton("Send Email", null)
                 .setTitle("Reset Password")
                 .show();
@@ -50,6 +51,8 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
     public void onClick(View view) {
 
         String email = emailText.getText().toString();
+        final Toast emailSent =  Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT);
+        final Toast emailFailed = Toast.makeText(getActivity(), "Could not find any account linked to the email address entered", Toast.LENGTH_SHORT);
 
         if (email != null) {
 
@@ -57,11 +60,15 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        dismiss();
+                        emailSent.show();
+                    } else {
+                        emailFailed.show();
                     }
                 }
             });
-            Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT).show();
+
+            dismiss();
+
         } else {
             Toast.makeText(getActivity(), "Please enter your email", Toast.LENGTH_SHORT).show();
         }
@@ -69,9 +76,3 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
     }
 }
 
-/*
-When the user clicks "Send Email" in this dialogue's resource file, take the email and
-send it to Firebase. Start this dialogue when pressing a "forgot password button" in LoginActivity. In the server code, get that email
-and use it in ref.resetPassword(email) to send a link to the user's email.
-
- */
