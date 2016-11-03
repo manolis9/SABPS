@@ -1,6 +1,7 @@
 package com.example.mazdis.activities;
 
 import android.app.Dialog;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,17 +11,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ForgotPassword extends DialogFragment implements View.OnClickListener {
 
-    private static final String FIREBASE_EMAIL= "email";
+    private static final String FIREBASE_EMAIL = "email";
     private static final String FIREBASE_RESET_PASSWORD_EMAIL = "Reset Password Email";
 
     private DatabaseReference mDatabase;
     private EditText emailText;
+    FirebaseAuth mAuth;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,6 +32,8 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         emailText = (EditText) dialogView.findViewById(R.id.user_email);
+
+        mAuth = FirebaseAuth.getInstance();
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
@@ -45,11 +51,17 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
 
         String email = emailText.getText().toString();
 
-        if(email != null){
-            DatabaseReference mRef = mDatabase.child(FIREBASE_RESET_PASSWORD_EMAIL).child(FIREBASE_EMAIL);
-            mRef.setValue(email);
-            Toast.makeText(getActivity(), "Reset password email sent", Toast.LENGTH_SHORT).show();
-            dismiss();
+        if (email != null) {
+
+            mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        dismiss();
+                    }
+                }
+            });
+            Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getActivity(), "Please enter your email", Toast.LENGTH_SHORT).show();
         }

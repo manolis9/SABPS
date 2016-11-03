@@ -6,13 +6,20 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mazdis.sabps.R;
 import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wearable.DataApi;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ChangePassword extends DialogFragment implements View.OnClickListener {
 
@@ -20,6 +27,7 @@ public class ChangePassword extends DialogFragment implements View.OnClickListen
     private EditText newPassword;
     private EditText confirmNewPassword;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -30,6 +38,7 @@ public class ChangePassword extends DialogFragment implements View.OnClickListen
         confirmNewPassword = (EditText) dialogView.findViewById(R.id.change_password_confirm_new_password);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
@@ -50,9 +59,19 @@ public class ChangePassword extends DialogFragment implements View.OnClickListen
         String confirm = confirmNewPassword.getText().toString();
 
         if (newPass.equals(confirm)) {
-            mAuth.getCurrentUser().updatePassword(newPassword.getText().toString());
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            user.updatePassword(newPass)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                dismiss();
+                            }
+                        }
+                    });
             Toast.makeText(getActivity(), "Password Updated", Toast.LENGTH_SHORT).show();
-            dismiss();
         } else {
             Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
         }
