@@ -201,4 +201,12 @@ public class UserAccount extends Menu {
         });
     }
 
+    public void startUpdateCard(View v){
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null);
+        UpdateCard dialog = new UpdateCard();
+        dialog.show(transaction, null);
+    }
+
 }

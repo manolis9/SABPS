@@ -38,5 +38,6 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.2.0'
     compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    compile 'com.stripe:stripe-android:+'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="primary_color_dark">#2196F3</color>
+
+    <color name="spinnerItem">#AAAAAA</color>
+    <color name="editText">#AAAAAA</color>
+    <color name="buttonText">#EEEEEE</color>
+    <color name="headerText">#EEEEEE</color>
+
 </resources>

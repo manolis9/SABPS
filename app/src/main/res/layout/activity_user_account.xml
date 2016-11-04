@@ -57,6 +57,13 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             />
+        <TextView
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:onClick="startUpdateCard"
+            android:text="Card Number"
+            android:textSize="20sp"
+            android:clickable="true"/>
 
         <Button
             android:layout_width="200dp"

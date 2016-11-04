@@ -67,7 +67,8 @@
         <service android:name="com.example.mazdis.activities.LocationService" />
 
         <activity android:name="com.example.mazdis.activities.ChangePassword" />
-        <activity android:name="com.example.mazdis.activities.ForgotPassword"></activity>
+        <activity android:name="com.example.mazdis.activities.ForgotPassword" />
+        <activity android:name="com.example.mazdis.activities.UpdateCard"></activity>
     </application>
 
 </manifest>

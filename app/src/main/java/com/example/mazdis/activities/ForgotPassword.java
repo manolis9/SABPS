@@ -50,11 +50,12 @@ public class ForgotPassword extends DialogFragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
 
+
+        if (emailText.getText().toString() != null) {
+
         String email = emailText.getText().toString();
         final Toast emailSent =  Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT);
         final Toast emailFailed = Toast.makeText(getActivity(), "Could not find any account linked to the email address entered", Toast.LENGTH_SHORT);
-
-        if (email != null) {
 
             mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
