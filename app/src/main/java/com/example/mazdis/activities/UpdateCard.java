@@ -10,19 +10,34 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
 import com.stripe.android.*;
 
 import com.example.mazdis.sabps.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stripe.android.model.Card;
+import com.stripe.android.model.Token;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Charge;
+import com.stripe.model.Customer;
 
-public class UpdateCard extends DialogFragment implements View.OnClickListener{
+import java.util.HashMap;
+import java.util.Map;
+
+public class UpdateCard extends DialogFragment implements View.OnClickListener {
 
     EditText cardNumber;
     EditText cvc;
     Spinner month;
     Spinner year;
+
+    DatabaseReference mDatabase;
+    FirebaseAuth mAuth;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -32,6 +47,9 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener{
         cvc = (EditText) dialogView.findViewById(R.id.cvc);
         month = (Spinner) dialogView.findViewById(R.id.expMonth);
         year = (Spinner) dialogView.findViewById(R.id.expYear);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(dialogView)
@@ -48,7 +66,7 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
-        if(cardNumber != null && cvc != null && month.getSelectedItem() != null && year.getSelectedItem() != null) {
+        if (cardNumber != null && cvc != null && month.getSelectedItem() != null && year.getSelectedItem() != null) {
 
             String expMonthString = month.getSelectedItem().toString();
             String expYearString = year.getSelectedItem().toString();
@@ -61,9 +79,39 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener{
 
             if (!card.validateCard()) {
                 Toast.makeText(getActivity(), "Could not validate card. Please try again", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Card valid", Toast.LENGTH_SHORT).show();
+
+                try {
+                    Stripe stripe = new Stripe("pk_test_rkbHNq1c430fnUTDRegoZhCM");
+
+                    stripe.createToken(
+                            card,
+                            new TokenCallback() {
+                                public void onSuccess(Token token) {
+                                    // Send token to your server
+
+                                    DatabaseReference mRef = mDatabase.child("token").child("tokenid");
+                                    mRef.child("id").setValue(token.getId());
+
+                                }
+
+                                public void onError(Exception error) {
+                                    // Show localized error message
+                                    Toast.makeText(getContext(),
+                                            "Error creating token",
+                                            Toast.LENGTH_LONG
+                                    ).show();
+                                }
+                            }
+                    );
+                    }catch(AuthenticationException e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }else{
+                Toast.makeText(getActivity(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(getActivity(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
         }
     }
-}
