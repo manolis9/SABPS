@@ -31,6 +31,8 @@ import java.util.Map;
 
 public class UpdateCard extends DialogFragment implements View.OnClickListener {
 
+    private static final String FIREBASE_USERS = "Users";
+    private static final String USER_CREDITCARD = "credit card";
     EditText cardNumber;
     EditText cvc;
     Spinner month;
@@ -72,10 +74,11 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
             String expYearString = year.getSelectedItem().toString();
             int expMonth = Integer.parseInt(expMonthString);
             int expYear = Integer.parseInt(expYearString);
-            String number = cardNumber.getText().toString();
             String cvcNumber = cvc.getText().toString();
+            String number = cardNumber.getText().toString();
 
-            Card card = new Card(number, expMonth, expYear, cvcNumber);
+
+            final Card card = new Card(number, expMonth, expYear, cvcNumber);
 
             if (!card.validateCard()) {
                 Toast.makeText(getActivity(), "Could not validate card. Please try again", Toast.LENGTH_SHORT).show();
@@ -91,8 +94,16 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
                                 public void onSuccess(Token token) {
                                     // Send token to your server
 
-                                    DatabaseReference mRef = mDatabase.child("token").child("tokenid");
-                                    mRef.child("id").setValue(token.getId());
+                                    String uid = mAuth.getCurrentUser().getUid();
+                                    String email = mAuth.getCurrentUser().getEmail();
+
+                                    Map<String, String> customer = new HashMap<>();
+                                    customer.put("tokenId", token.getId());
+                                    customer.put("uid", uid);
+                                    customer.put("email", email);
+
+                                    DatabaseReference mRef = mDatabase.child("new customer").child("customer");
+                                    mRef.setValue(customer);
 
                                 }
 
@@ -105,13 +116,13 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
                                 }
                             }
                     );
-                    }catch(AuthenticationException e){
-                        e.printStackTrace();
-                    }
-
+                } catch (AuthenticationException e) {
+                    e.printStackTrace();
                 }
-            }else{
-                Toast.makeText(getActivity(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+
             }
+        } else {
+            Toast.makeText(getActivity(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
         }
     }
+}

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +53,9 @@ public class ConfirmDone extends BaseActivity {
     private static final String FIREBASE_EMAIL_TO = "to";
     private static final String FIREBASE_EMAIL_SUBJECT = "subject";
     private static final String FIREBASE_EMAIL_BODY = "body";
+    private static final String USER_CUSTOMERID = "customerId";
+    private static final String FIREBASE_CHARGE_CUSTOMER = "charge customer";
+    private static final String FIREBASE_CUSTOMER = "customer";
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -122,6 +126,8 @@ public class ConfirmDone extends BaseActivity {
 
             String cost = calculateCost(startTime, endTime, rate);
             Log.v("cost", cost);
+
+            chargeUser(cost);
 
             DatabaseReference booking_titles_db = mDatabase.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
@@ -270,5 +276,36 @@ public class ConfirmDone extends BaseActivity {
         return false;
     }
 
+    public void chargeUser(final String amount){
+        String uid = mAuth.getCurrentUser().getUid();
+
+        final String a;
+        if (amount.contains("$")) {
+            a = amount.replace("$", "");
+        } else a = amount;
+
+        final DatabaseReference current_user_db = mDatabase.child(FIREBASE_USERS).child(uid);
+
+        current_user_db.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
+                Map<String, String> map = (Map) dataSnapshot.getValue();
+                String customerId = map.get(USER_CUSTOMERID);
+
+                Map<String, String> customer = new HashMap<>();
+                customer.put("customerId", customerId);
+                customer.put("amount", a);
+
+                DatabaseReference charge_customer = mDatabase.child(FIREBASE_CHARGE_CUSTOMER).child(FIREBASE_CUSTOMER);
+                charge_customer.setValue(customer);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
 

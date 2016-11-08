@@ -38,32 +38,69 @@ app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
 
-	/* Charge the user's credit card for his booking*/
-	firebase.database().ref().child('token').on('child_changed', function(tokenid) {
-		var tid = tokenid.val();
+	/*Create a new customer*/
+	firebase.database().ref().child('new customer').on('child_changed', function(customer) {
+		var cust = customer.val();
 
-		console.log(tid.id);
+		userId = cust.uid;
+		stripe.customers.create({
+			source: cust.tokenId,
+			description: cust.email
+		}).then(function(customer) {
+			var customerId = customer.id
 
 
-		stripe.tokens.retrieve(tid.id, function(err, tok) {
-			console.log(tok);
-
-			var charge = stripe.charges.create({
-				amount: 1000, // Amount in cents
-				currency: "cad",
-				source: tok,
-				description: "Example charge"
-			}, function(err, charge) {
-				if (err && err.type === 'StripeCardError') {
-					// The card has been declined
-				} else {
-					console.log("Card was charged")
-				}
-			});
-
+			firebase.database().ref().child('Users').child(userId).child('customerId').set(customerId);
 		});
 
+		console.log("Customer created!");
+
 	});
+
+	/*Charge a customer*/
+	firebase.database().ref().child('charge customer').on('child_changed', function(customer) {
+		var cust = customer.val();
+
+		var customerId = cust.customerId;
+		var amount = parseFloat(cust.amount);
+		amount = amount*100;
+
+		stripe.charges.create({
+			amount: amount, // Amount in cents
+			currency: "cad",
+			customer: customerId // Previously stored, then retrieved
+		});
+
+		console.log("Customer charged!");
+	});
+
+
+	// /* Charge the user's credit card for his booking*/
+	// firebase.database().ref().child('token').on('child_changed', function(tokenid) {
+	// 	var tid = tokenid.val();
+
+	// 	console.log(tid.id);
+
+
+	// 	stripe.tokens.retrieve(tid.id, function(err, tok) {
+	// 		console.log(tok);
+
+	// 		var charge = stripe.charges.create({
+	// 			amount: 1000, // Amount in cents
+	// 			currency: "cad",
+	// 			source: tok,
+	// 			description: "Example charge"
+	// 		}, function(err, charge) {
+	// 			if (err && err.type === 'StripeCardError') {
+	// 				// The card has been declined
+	// 			} else {
+	// 				console.log("Card was charged")
+	// 			}
+	// 		});
+
+	// 	});
+
+	// });
 
 	/* Booking confirmation, completion, cancellation and registration confirmation emails*/
 	firebase.database().ref().child('Emails to Send').on('child_changed', function(emailSnap) {
