@@ -97,70 +97,79 @@ public class MyBookings extends Menu  {
     */
     public void createTextView(String bookingTitle){
 
-        String user_id = mAuth.getCurrentUser().getUid();
-        Firebase current_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
-        current_mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                LinearLayout MainLinearLayout = (LinearLayout)findViewById(R.id.my_bookings_layout);
+            String user_id = mAuth.getCurrentUser().getUid();
+            Firebase current_mRef = mRef.child(FIREBASE_USERS).child(user_id).child(FIREBASE_USER_BOOKINGS).child(bookingTitle);
 
-                LinearLayout innerLinearLayout = createLinearLayout();
+            current_mRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                MainLinearLayout.addView(innerLinearLayout);
+                    Map<String, String> map = dataSnapshot.getValue(Map.class);
 
-                Map<String, String> map = dataSnapshot.getValue(Map.class);
+                        try{
+                            map.get(FIREBASE_BOOKING_TITLE);
+                        } catch(Exception e){
+                            return;
+                        }
 
-                TextView title = new TextView(MyBookings.this);
-                title.setText(map.get(FIREBASE_BOOKING_TITLE));
-                title.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(title);
+                        LinearLayout MainLinearLayout = (LinearLayout) findViewById(R.id.my_bookings_layout);
 
-                TextView address = new TextView(MyBookings.this);
-                address.setText(map.get(FIREBASE_BOOKING_ADDRESS));
-                address.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(address);
+                        LinearLayout innerLinearLayout = createLinearLayout();
 
-                TextView date = new TextView(MyBookings.this);
-                date.setText(map.get(FIREBASE_BOOKING_DATE));
-                date.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(date);
+                        MainLinearLayout.addView(innerLinearLayout);
 
-                TextView startTime = new TextView(MyBookings.this);
-                startTime.setText(map.get(FIREBASE_BOOKING_START_TIME));
-                startTime.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(startTime);
 
-                TextView endTime =  new TextView(MyBookings.this);
-                endTime.setText(map.get(FIREBASE_BOOKING_END_TIME));
-                endTime.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(endTime);
+                        TextView title = new TextView(MyBookings.this);
+                        title.setText(map.get(FIREBASE_BOOKING_TITLE));
+                        title.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(title);
 
-                TextView cost = new TextView(MyBookings.this);
-                cost.setText(map.get(FIREBASE_BOOKING_COST));
-                cost.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                innerLinearLayout.addView(cost);
+                        TextView address = new TextView(MyBookings.this);
+                        address.setText(map.get(FIREBASE_BOOKING_ADDRESS));
+                        address.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(address);
 
-            }
+                        TextView date = new TextView(MyBookings.this);
+                        date.setText(map.get(FIREBASE_BOOKING_DATE));
+                        date.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(date);
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+                        TextView startTime = new TextView(MyBookings.this);
+                        startTime.setText(map.get(FIREBASE_BOOKING_START_TIME));
+                        startTime.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(startTime);
 
-            }
-        });
+                        TextView endTime = new TextView(MyBookings.this);
+                        endTime.setText(map.get(FIREBASE_BOOKING_END_TIME));
+                        endTime.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(endTime);
+
+                        TextView cost = new TextView(MyBookings.this);
+                        cost.setText(map.get(FIREBASE_BOOKING_COST));
+                        cost.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        innerLinearLayout.addView(cost);
+
+                    }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
 
     }
 

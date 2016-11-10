@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <application
         android:name="com.mazdis.sabps.infrastructure.SabpsApplication"
@@ -61,7 +62,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.mazdis.activities.MyBookings" />
+        <activity android:name="com.example.mazdis.activities.MyBookings"
+            android:launchMode = "singleInstance"
+            android:noHistory="true"/>
 
         <service android:name="com.example.mazdis.activities.BroadcastService" />
         <service android:name="com.example.mazdis.activities.LocationService" />

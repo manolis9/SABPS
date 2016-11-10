@@ -3,7 +3,6 @@ package com.example.mazdis.activities;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -18,21 +17,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.APIException;
 import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.model.Charge;
-import com.stripe.model.Customer;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UpdateCard extends DialogFragment implements View.OnClickListener {
 
-    private static final String FIREBASE_USERS = "Users";
-    private static final String USER_CREDITCARD = "credit card";
+    private static final String MONTH_SPINNER_DEFAULT_VALUE = "Month";
+    private static final String YEAR_SPINNER_DEFAULT_VALUE = "Year";
+    private static final String STRIPE_TEST_PUBLISHABLE_KEY = "pk_test_rkbHNq1c430fnUTDRegoZhCM";
+    private static final String FIREBASE_NEW_CUSTOMER = "new customer";
+    private static final String FIREBASE_CUSTOMER = "customer";
+    private static final String FIREBASE_TOKEN_ID = "tokenId";
+    private static final String FIREBASE_USER_ID = "uid";
+    private static final String FIREBASE_USER_EMAIL = "email";
     EditText cardNumber;
     EditText cvc;
     Spinner month;
@@ -68,7 +67,8 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        if (cardNumber != null && cvc != null && month.getSelectedItem() != null && year.getSelectedItem() != null) {
+        if (cardNumber != null && cvc != null && !month.getSelectedItem().equals(MONTH_SPINNER_DEFAULT_VALUE)
+                && !year.getSelectedItem().equals(YEAR_SPINNER_DEFAULT_VALUE)) {
 
             String expMonthString = month.getSelectedItem().toString();
             String expYearString = year.getSelectedItem().toString();
@@ -86,7 +86,7 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "Card valid", Toast.LENGTH_SHORT).show();
 
                 try {
-                    Stripe stripe = new Stripe("pk_test_rkbHNq1c430fnUTDRegoZhCM");
+                    Stripe stripe = new Stripe(STRIPE_TEST_PUBLISHABLE_KEY);
 
                     stripe.createToken(
                             card,
@@ -98,11 +98,11 @@ public class UpdateCard extends DialogFragment implements View.OnClickListener {
                                     String email = mAuth.getCurrentUser().getEmail();
 
                                     Map<String, String> customer = new HashMap<>();
-                                    customer.put("tokenId", token.getId());
-                                    customer.put("uid", uid);
-                                    customer.put("email", email);
+                                    customer.put(FIREBASE_TOKEN_ID, token.getId());
+                                    customer.put(FIREBASE_USER_ID, uid);
+                                    customer.put(FIREBASE_USER_EMAIL, email);
 
-                                    DatabaseReference mRef = mDatabase.child("new customer").child("customer");
+                                    DatabaseReference mRef = mDatabase.child(FIREBASE_NEW_CUSTOMER).child(FIREBASE_CUSTOMER);
                                     mRef.setValue(customer);
 
                                 }

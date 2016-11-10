@@ -99,7 +99,8 @@ public class ModuleProfile extends BaseActivity {
         titleTextView.setText(getIntent().getStringExtra("title"));
         addressTextView.setText(getIntent().getStringExtra("address"));
         String rate = getIntent().getStringExtra("rate");
-        rateTextView.setText('$' + rate);
+        String dollarRate = '$' + rate;
+        rateTextView.setText(dollarRate);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -139,7 +140,8 @@ public class ModuleProfile extends BaseActivity {
                 // float distance = currentLocation.distanceTo(markerLocation) / 1000;
                 String distance = getBicyclingDistance(currentLocation,markerLocation);
                 if(distance != null) {
-                    distanceTextView.setText(distance + " away");
+                    String distanceAway = distance + " away";
+                    distanceTextView.setText(distanceAway);
                 }
 
         }

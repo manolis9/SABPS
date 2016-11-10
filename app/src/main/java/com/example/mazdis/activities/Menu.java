@@ -39,10 +39,14 @@ public abstract class Menu extends BaseActivity{
             public void onClick(View v){
 
                 if(findParking.getText().equals("Find Parking")) {
-                    startActivity(new Intent(Menu.this, MapsActivity.class));
+                    Intent intent = new Intent(Menu.this, MapsActivity.class);
+                  // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
                 } else{
-                    startActivity(new Intent(Menu.this, ReservedMapsActivity.class));
+                    Intent intent = new Intent(Menu.this, ReservedMapsActivity.class);
+                   // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
                 }
             }
@@ -52,7 +56,9 @@ public abstract class Menu extends BaseActivity{
             @Override
             public void onClick(View v){
 
-                startActivity(new Intent(Menu.this, UserAccount.class));
+                Intent intent = new Intent(Menu.this, UserAccount.class);
+               // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             }
         });
@@ -61,7 +67,9 @@ public abstract class Menu extends BaseActivity{
             @Override
             public void onClick(View v){
 
-                startActivity(new Intent(Menu.this, SettingsActivity.class));
+                Intent intent = new Intent(Menu.this, SettingsActivity.class);
+               // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
             }
         });
@@ -70,7 +78,9 @@ public abstract class Menu extends BaseActivity{
             @Override
             public void onClick(View v){
 
-                startActivity(new Intent(Menu.this, ContactUs.class));
+                Intent intent = new Intent(Menu.this, ContactUs.class);
+              //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
 
             }
@@ -80,7 +90,9 @@ public abstract class Menu extends BaseActivity{
             @Override
             public void onClick(View v){
 
-                startActivity(new Intent(Menu.this, MyBookings.class));
+                Intent intent = new Intent(Menu.this, MyBookings.class);
+              //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
 
             }

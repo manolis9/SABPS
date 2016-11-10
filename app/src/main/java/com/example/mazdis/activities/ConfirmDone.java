@@ -1,13 +1,11 @@
 package com.example.mazdis.activities;
 
 import android.app.ActivityManager;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -19,12 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.APIException;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.model.Charge;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,9 +45,11 @@ public class ConfirmDone extends BaseActivity {
     private static final String FIREBASE_EMAIL_TO = "to";
     private static final String FIREBASE_EMAIL_SUBJECT = "subject";
     private static final String FIREBASE_EMAIL_BODY = "body";
-    private static final String USER_CUSTOMERID = "customerId";
+    private static final String USER_CUSTOMER_ID = "customerId";
     private static final String FIREBASE_CHARGE_CUSTOMER = "charge customer";
     private static final String FIREBASE_CUSTOMER = "customer";
+    private static final String FIREBASE_CUSTOMER_CUSTOMER_ID = "customerId";
+    private static final String FIREBASE_CUSTOMER_AMOUNT = "amount";
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -290,11 +284,11 @@ public class ConfirmDone extends BaseActivity {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 Map<String, String> map = (Map) dataSnapshot.getValue();
-                String customerId = map.get(USER_CUSTOMERID);
+                String customerId = map.get(USER_CUSTOMER_ID);
 
                 Map<String, String> customer = new HashMap<>();
-                customer.put("customerId", customerId);
-                customer.put("amount", a);
+                customer.put(FIREBASE_CUSTOMER_CUSTOMER_ID, customerId);
+                customer.put(FIREBASE_CUSTOMER_AMOUNT, a);
 
                 DatabaseReference charge_customer = mDatabase.child(FIREBASE_CHARGE_CUSTOMER).child(FIREBASE_CUSTOMER);
                 charge_customer.setValue(customer);
