@@ -113,9 +113,13 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         mProgress.dismiss();
 
         for (int i = 0; i < list.size(); i++) {
-            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
-                    .position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, list.get(i).getAddress())));
+            try{
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
+                        .position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, list.get(i).getAddress())));
+            } catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
         }
     }
 

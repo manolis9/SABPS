@@ -15,9 +15,10 @@ import com.stripe.android.*;
 import com.example.mazdis.sabps.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.stripe.android.exception.AuthenticationException;
 import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
-import com.stripe.exception.AuthenticationException;
+
 
 import java.util.HashMap;
 import java.util.Map;

@@ -39,5 +39,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'com.stripe:stripe-android:+'
+    compile 'com.android.support:support-annotations:24.1.0'
 }
 apply plugin: 'com.google.gms.google-services'
