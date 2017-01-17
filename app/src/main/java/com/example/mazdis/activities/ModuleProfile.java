@@ -147,6 +147,7 @@ public class ModuleProfile extends BaseActivity {
         }
     };
 
+
     /* Once the user taps on "Reserve", a booking and a booking title
     * are added to the database and ReservedMapsActivity starts*/
     public void startReservedMap(View view) {

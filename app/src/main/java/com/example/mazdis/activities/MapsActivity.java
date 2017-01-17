@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -23,21 +25,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 public class MapsActivity extends Menu implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ProgressDialog mProgress;
+    private SupportMapFragment mapFragment;
+    private Handler markersHandler;
 
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        markersHandler = new Handler();
         mProgress = new ProgressDialog(this);
 
         /* The menu should have a "Find Parking" button instead of a "Current Booking"
@@ -48,6 +55,30 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         editor.putInt("altMenuFlag", 0);
         editor.commit();
 
+    }
+
+    @Override
+    protected void onResume() {
+        mapFragment.onResume();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mapFragment.onPause();
+        super.onPause();
+    }
+
+//    @Override
+//    protected void onDestroy() {
+//        mapFragment.onDestroy();
+//        super.onDestroy();
+//    }
+
+    @Override
+    public void onLowMemory() {
+        mapFragment.onLowMemory();
+        super.onLowMemory();
     }
 
     @Override
@@ -73,15 +104,8 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
                     android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1340);
         }
 
-
-//        mProgress.setMessage("Loading Map...");
-//        mProgress.show();
-//        while(list == null) {
-//            list = modulesList();
-//        }
-//
-//        mProgress.dismiss();
         placeMarkers();
+
 
         /* Once a marker is tapped, start ModuleProfile with the info of the
         *  SABPS module the marker corresponds to
@@ -102,25 +126,54 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
     */
     public void placeMarkers() {
 
-        ArrayList<Module> list = modulesList();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        LatLng position;
+        int markerCount = 0;
+        final ArrayList<Module> list = modulesList();
 
-        mProgress.setMessage("Loading Map...");
-        mProgress.show();
-        while(list == null) {
-            list = modulesList();
-        }
+        if (prefs.contains("markerCount")) {
+            markerCount = prefs.getInt("markerCount", 0);
 
-        mProgress.dismiss();
+            for (int i = 0; i <= markerCount; i++) {
+                Double lat;
+                Double lng;
+                LatLng latLng;
+                lat = Double.parseDouble(prefs.getString("lat" + Integer.toString(i), "0"));
+                lng = Double.parseDouble(prefs.getString("lng" + Integer.toString(i), "0"));
+                latLng = new LatLng(lat, lng);
 
-        for (int i = 0; i < list.size(); i++) {
-            try{
                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
-                        .position(getLocationFromAddress(this, list.get(i).getAddress())).title(list.get(i).getTitle()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(getLocationFromAddress(this, list.get(i).getAddress())));
-            } catch (IllegalArgumentException e){
-                e.printStackTrace();
+                        .position(latLng).title(list.get(i).getTitle()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
             }
+
+        } else {
+
+            for (int i = 0; i < list.size(); i++) {
+                try {
+
+                    position = getLocationFromAddress(MapsActivity.this, list.get(i).getAddress());
+
+
+                    mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker))
+                            .position(position).title(list.get(i).getTitle()));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+
+                    putSharedPrefs(position, "lat" + Integer.toString(i), "lng" + Integer.toString(i));
+                    markerCount++;
+
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+
+                }
+            }
+
+            editor.putInt("markerCount", markerCount);
+            editor.apply();
         }
+
     }
 
     /* Takes a marker as an input and starts ModuleProfile Activity with the info
@@ -177,6 +230,7 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         return list;
     }
 
+
     /* Given a context and an address, this method returns a LatLng object corresponding
     *  to that address.
     *  @Requires: the address has to be valid.
@@ -206,7 +260,23 @@ public class MapsActivity extends Menu implements OnMapReadyCallback {
         return latlng;
     }
 
+    public void putSharedPrefs(LatLng latlng, String strLat, String strLng) {
+
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString(strLat, Double.toString(lat));
+        editor.putString(strLng, Double.toString(lng));
+
+        editor.apply();
+
+    }
+
 }
+
 
 
 
